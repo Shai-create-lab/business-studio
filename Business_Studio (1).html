@@ -1,0 +1,1584 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Business Studio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;600;700&display=swap">
+<style>
+/* Layout concept: a shop-lined street. Each business is a storefront card under a striped awning; one feed, one composer with live preview, one logo studio. */
+:root{
+  --bg:#f6f6fb;--card:#ffffff;--ink:#181b2b;--mute:#5b6178;--line:#dfe2ef;
+  --blue:#2563eb;--blue-t:#eaf1ff;--purple:#7c3aed;--purple-t:#f2ecff;--deep:#4c1d95;
+  --ok:#15803d;--bad:#c0132f;
+  --f-head:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --f-body:"Figtree","Segoe UI",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 76px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15.5px/1.55 var(--f-body)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:70;background:#fff}
+h1,h2,h3{font-family:var(--f-head);margin:0;line-height:1.12;text-wrap:balance}
+p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+button:disabled{opacity:.55;cursor:not-allowed}
+:focus-visible{outline:3px solid var(--purple);outline-offset:2px}
+.in{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.hint{color:var(--mute);font-size:13.5px}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:60;background:#fff;border-bottom:2px solid var(--deep)}
+.nav .in{display:flex;align-items:center;gap:6px 14px;padding-block:8px;flex-wrap:wrap}
+.brandmini{display:flex;align-items:center;gap:8px;font:800 19px var(--f-head);color:var(--deep);white-space:nowrap}
+.links{display:flex;gap:2px;overflow-x:auto;min-width:0;max-width:100%}
+.nl{background:none;border:0;border-bottom:3px solid transparent;padding:8px 12px;font-weight:700;white-space:nowrap;color:var(--ink)}
+.nl:hover{color:var(--blue)}
+.nl.on{color:var(--blue);border-bottom-color:var(--blue)}
+.who{margin-left:auto;display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px;min-width:0}
+.who img{width:30px;height:30px;border-radius:50%;border:2px solid var(--purple);flex:none}
+.who span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:160px}
+
+/* hero */
+.hero{position:relative;overflow:hidden;border-bottom:2px solid var(--deep);background:linear-gradient(120deg,#e6eeff,#f1e9ff,#e1efff,#eee4ff);background-size:300% 300%;animation:flow 16s ease infinite}
+.hero .in{position:relative;z-index:1;padding-block:34px 28px}
+@keyframes flow{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}
+.orb{position:absolute;border-radius:50%;opacity:.55;pointer-events:none;animation:float 9s ease-in-out infinite}
+.orb:nth-child(odd){background:radial-gradient(circle at 30% 30%,#fff,#8fb0ff)}
+.orb:nth-child(even){background:radial-gradient(circle at 30% 30%,#fff,#b79bff)}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(12px,-22px) scale(1.06)}}
+.hero h1{font-size:clamp(36px,7vw,60px);font-weight:800;letter-spacing:-.5px;background:linear-gradient(90deg,var(--blue),var(--purple),var(--blue));background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:shine 6s linear infinite;width:fit-content}
+@keyframes shine{to{background-position:200% 0}}
+.slogan{display:block;font:800 clamp(17px,3.2vw,22px) var(--f-head);margin-top:6px}
+.w1{color:var(--blue)}.w2{color:var(--purple)}.w3{color:var(--deep)}
+.lead{max-width:56ch;margin-top:12px;color:#2b3050;font-size:17px}
+.cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.stats{display:flex;gap:10px 22px;flex-wrap:wrap;margin-top:20px;font-weight:700;color:var(--deep)}
+.stats b{font:800 22px var(--f-head)}
+
+/* buttons */
+.btn{border:0;border-radius:999px;padding:11px 22px;font-weight:800;color:#fff;background:linear-gradient(135deg,var(--blue),var(--purple))}
+.btn:hover:not(:disabled){filter:brightness(1.07)}
+.btn.alt{background:#fff;color:var(--deep);border:2px solid var(--deep)}
+.bub{border:2px solid var(--blue);background:var(--blue-t);color:#15306e;border-radius:999px;padding:6px 14px;font-weight:700;font-size:14px}
+.bub.p{border-color:var(--purple);background:var(--purple-t);color:#3b1380}
+.bub.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.bub.p.on{background:var(--purple);border-color:var(--purple);color:#fff}
+.bub:hover:not(:disabled){filter:brightness(.96)}
+.bub.danger{border-color:var(--bad);background:#fff0f2;color:#8f0f24}
+
+/* inputs */
+label.fld{display:block;margin-top:12px}
+label.fld>span{display:block;font-size:13px;font-weight:700;color:var(--mute);margin-bottom:4px}
+input[type=text],input[type=search],select,textarea{width:100%;font:inherit;color:var(--ink);background:#fff;border:2px solid var(--blue);border-radius:12px;padding:9px 11px}
+textarea{resize:vertical;min-height:110px}
+input[type=color]{width:46px;height:38px;padding:2px;border:2px solid var(--blue);border-radius:10px;background:#fff}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.row.mt{margin-top:10px}
+
+/* cards */
+main.in{padding-block:22px 40px}
+.card{background:var(--card);border:2px solid var(--deep);border-radius:18px;padding:16px}
+.view>.card+.card{margin-top:16px}
+.sec-h{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.sec-h h2{font-size:26px}
+#note{margin-bottom:14px;border:2px solid var(--purple);background:var(--purple-t);color:#3b1380;border-radius:14px;padding:10px 14px;font-weight:600}
+
+/* feed */
+.filters{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:center;margin-bottom:16px}
+@media(max-width:780px){.filters{grid-template-columns:1fr 1fr}.filters input[type=search]{grid-column:1/-1}}
+#feed{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,420px),1fr));gap:18px;align-items:start}
+.biz{position:relative;overflow:hidden;padding:0;min-width:0}
+.awn{height:26px;background:repeating-linear-gradient(90deg,var(--blue) 0 24px,var(--blue-t) 24px 48px,var(--purple) 48px 72px,var(--purple-t) 72px 96px);-webkit-mask:linear-gradient(#000 0 0) top/100% 14px no-repeat,radial-gradient(circle at 12px 0,#000 11.5px,transparent 12px) bottom/24px 12px repeat-x;mask:linear-gradient(#000 0 0) top/100% 14px no-repeat,radial-gradient(circle at 12px 0,#000 11.5px,transparent 12px) bottom/24px 12px repeat-x}
+.bz{padding:6px 16px 16px}
+.bh{display:flex;gap:12px;align-items:flex-start}
+.logo{width:64px;height:64px;flex:none;border-radius:14px;border:2px solid var(--line);background:#fff;display:grid;place-items:center;overflow:hidden;font:800 24px var(--f-head);color:var(--purple)}
+.logo img{width:100%;height:100%;object-fit:contain}
+.bt{min-width:0}
+.bt h3{font-size:21px;overflow-wrap:anywhere}
+.bm{display:flex;gap:6px 8px;flex-wrap:wrap;align-items:center;margin-top:4px;color:var(--mute);font-size:13.5px}
+.cat{display:inline-block;padding:1px 10px;border-radius:999px;background:var(--purple-t);color:#3b1380;font-size:12.5px;font-weight:700}
+.by{display:flex;align-items:center;gap:6px;margin-top:6px;font-size:13px;color:var(--mute)}
+.by img{width:20px;height:20px;border-radius:50%}
+.tagl{margin-top:10px;font:600 17px var(--f-head);color:var(--deep);overflow-wrap:anywhere}
+.pics{margin-top:12px}
+.pmain{position:relative;aspect-ratio:16/10;max-width:100%;border-radius:12px;overflow:hidden;background:var(--blue-t);border:2px solid var(--line)}
+.pmain img{width:100%;height:100%;object-fit:cover;display:block}
+.ill{position:absolute;left:8px;bottom:8px;background:rgba(24,27,43,.78);color:#fff;font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:999px}
+.thumbs{display:flex;gap:8px;margin-top:8px}
+.thumbs button{padding:0;width:62px;height:42px;border:2px solid var(--line);border-radius:8px;overflow:hidden;background:var(--blue-t)}
+.thumbs button.on{border-color:var(--purple)}
+.thumbs img{width:100%;height:100%;object-fit:cover;display:block}
+.desc{margin-top:12px;white-space:pre-wrap;overflow-wrap:anywhere}
+.desc.clamp{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.more{margin-top:4px;background:none;border:0;padding:0;color:var(--blue);font-weight:700}
+.contact{margin-top:10px;font-size:14px;overflow-wrap:anywhere}
+.contact a{color:var(--blue);font-weight:700}
+.rxbar{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:2px dashed var(--line)}
+.rx{display:inline-flex;align-items:center;gap:6px;border:2px solid var(--line);background:#fff;border-radius:999px;padding:4px 12px;font-weight:700;font-size:14px;min-height:38px}
+.rx .e{font-size:19px;line-height:1}
+.rx:hover:not(:disabled){border-color:var(--blue);background:var(--blue-t)}
+.rx.on{border-color:var(--purple);background:var(--purple-t);color:#3b1380}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.cmts{margin-top:10px;border-top:2px dashed var(--line);padding-top:10px}
+.cm{display:flex;gap:8px;margin-bottom:10px}
+.cm img{width:28px;height:28px;border-radius:50%;flex:none}
+.cm .bd{min-width:0;flex:1;background:var(--bg);border-radius:12px;padding:6px 10px}
+.cm .nm{font-weight:700;font-size:13.5px}
+.cm .tm{color:var(--mute);font-weight:400;font-size:12.5px}
+.cm .tx{overflow-wrap:anywhere;white-space:pre-wrap}
+.cm .x{background:none;border:0;color:var(--mute);font-size:12.5px;padding:0;text-decoration:underline}
+.cin{display:flex;gap:8px;align-items:flex-start}
+.cin textarea{min-height:44px;height:44px}
+.exbadge{display:inline-block;margin:0 0 10px;background:var(--deep);color:#fff;font-size:12px;font-weight:700;padding:2px 10px;border-radius:999px}
+
+/* empty */
+#empty{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start}
+@media(max-width:820px){#empty{grid-template-columns:1fr}}
+#empty h2{font-size:28px}
+#empty p{margin-top:8px;color:var(--mute)}
+
+/* composer */
+.compose{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:18px;align-items:start}
+@media(max-width:900px){.compose{grid-template-columns:1fr}}
+.stick{position:sticky;top:calc(env(safe-area-inset-top,0px) + 70px)}
+@media(max-width:900px){.stick{position:static}}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:520px){.two{grid-template-columns:1fr}}
+.logobox{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:6px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.pedit{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.pe{position:relative;width:110px;height:74px;border-radius:10px;overflow:hidden;border:2px solid var(--line);background:var(--blue-t)}
+.pe img{width:100%;height:100%;object-fit:cover;display:block}
+.pe button{position:absolute;top:3px;right:3px;width:24px;height:24px;border-radius:50%;border:0;background:rgba(24,27,43,.8);color:#fff;line-height:1;padding:0}
+
+/* logos */
+.lgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:14px;margin-top:14px}
+.lc{border:2px solid var(--deep);border-radius:16px;padding:10px;background:#fff;min-width:0}
+.lc .art{aspect-ratio:1;border-radius:10px;border:2px solid var(--line);background:#fff;display:grid;place-items:center;overflow:hidden}
+.lc .art img{width:100%;height:100%;object-fit:contain}
+.lc .row{margin-top:8px}
+.sk{background:linear-gradient(90deg,var(--blue-t),var(--purple-t),var(--blue-t));background-size:200% 100%;animation:shine 1.4s linear infinite;border-radius:12px}
+
+.sect{margin-top:20px;padding-top:12px;border-top:2px dashed var(--line)}
+.sect h3{font-size:18px}
+.sect>.hint{margin-top:4px}
+.cbox{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.cline{font-size:14px;color:var(--mute);overflow-wrap:anywhere}
+.cacts{display:flex;gap:8px;flex-wrap:wrap}
+.cbtn{display:inline-flex;align-items:center;border:2px solid var(--blue);background:var(--blue-t);color:#15306e;border-radius:999px;padding:6px 14px;font-weight:700;font-size:14px;text-decoration:none;overflow-wrap:anywhere;max-width:100%;min-height:38px}
+.cbtn.wa{border-color:var(--ok);background:#e9f8ee;color:#0f5a2a}
+.cbtn:hover{filter:brightness(.96)}
+.lstage{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:20px;margin-top:18px;align-items:start}
+@media(max-width:760px){.lstage{grid-template-columns:1fr}}
+.lstage h3{font-size:22px;overflow-wrap:anywhere}
+.sart{aspect-ratio:1;width:100%;max-width:460px;border-radius:16px;border:2px solid var(--deep);background:#fff;display:grid;place-items:center;overflow:hidden}
+.sart img{width:100%;height:100%;object-fit:contain}
+.hist{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.hist button{width:58px;height:58px;padding:3px;border:2px solid var(--line);border-radius:10px;background:#fff}
+.hist button.on{border-color:var(--purple);box-shadow:0 0 0 2px var(--purple-t)}
+.hist img{width:100%;height:100%;object-fit:contain;display:block}
+.starters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.starters .bub{text-align:left}
+.chat{display:flex;flex-direction:column;gap:14px;max-height:min(58vh,540px);min-height:160px;overflow-y:auto;padding:4px 2px}
+.chatempty{color:var(--mute);margin:auto;text-align:center;max-width:44ch;padding:18px 0}
+.msg{max-width:min(100%,680px);min-width:0}
+.msg.u{align-self:flex-end}
+.msg .nm2{font-size:12.5px;font-weight:700;color:var(--mute);margin:0 6px 3px}
+.msg.u .nm2{text-align:right}
+.msg .bb{border:2px solid var(--line);background:#fff;border-radius:16px;padding:10px 14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.msg.u .bb{background:var(--purple-t);border-color:var(--purple);color:#2a0f5a}
+.msg.a .bb{border-color:var(--deep)}
+.msg .acts{margin-top:8px}
+.composeai{display:flex;gap:8px;align-items:flex-end;margin-top:14px}
+.composeai textarea{min-height:48px;max-height:160px;flex:1;min-width:0}
+#ideaChips .bub{border-radius:14px;text-align:left}
+.gate{min-height:100vh;display:grid;place-items:center;padding:max(24px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(24px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:linear-gradient(120deg,#e6eeff,#f1e9ff,#e1efff,#eee4ff);background-size:300% 300%;animation:flow 16s ease infinite}
+#gate:not([hidden])~nav,#gate:not([hidden])~header,#gate:not([hidden])~main,#gate:not([hidden])~.foot{display:none}
+.gate-in{width:100%;max-width:470px;text-align:center}
+.gate h1{font-size:clamp(34px,8vw,52px);font-weight:800;letter-spacing:-.5px;margin-top:6px;background:linear-gradient(90deg,var(--blue),var(--purple),var(--blue));background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:shine 6s linear infinite;width:fit-content;margin-inline:auto}
+.gcard{margin-top:20px;background:#fff;border:2px solid var(--deep);border-radius:20px;padding:22px;text-align:left}
+.gcard h2{font-size:24px}
+.gcard p{margin-top:8px;color:var(--mute)}
+.gcard ul{margin:10px 0 0;padding-left:20px}
+.gcard li{margin-top:4px}
+.gcard .btn,.gcard .bub{margin-top:16px}
+.gcard .row .bub{margin-top:0}
+.gav{width:68px;height:68px;border-radius:50%;border:3px solid var(--purple);display:block;margin:0 0 12px}
+.genwrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:start;margin-bottom:16px}
+@media(max-width:900px){.genwrap{grid-template-columns:1fr}}
+.step{font-size:19px}
+.step:not(:first-child){margin-top:22px;padding-top:14px;border-top:2px dashed var(--line)}
+.mini{font:700 15px var(--f-head);margin:0}
+.tips{margin:8px 0 0;padding-left:20px}
+.tips li{margin-top:6px}
+.score{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.chk{border:2px solid var(--line);border-radius:999px;padding:1px 10px;font-size:13px;font-weight:700;color:var(--mute);background:#fff}
+.chk.ok{border-color:var(--ok);color:var(--ok);background:#ecf9f0}
+.optbox{margin-top:12px;border:2px solid var(--purple);background:var(--purple-t);border-radius:14px;padding:12px}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+@media(max-width:560px){.cols2{grid-template-columns:1fr}}
+.cols2 h4{margin:0 0 4px;font-size:13px;color:var(--mute)}
+.cols2 pre{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.5 var(--f-body);background:#fff;border:2px solid var(--line);border-radius:10px;padding:8px;max-height:240px;overflow:auto}
+.vers{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.gout{border:2px solid var(--line);border-radius:14px;padding:12px;min-height:150px;background:#fff;overflow-wrap:anywhere}
+.gout .gp{white-space:pre-wrap;margin:0 0 8px}
+.gout img{width:100%;border-radius:10px;display:block}
+.code{margin:0;white-space:pre;overflow:auto;max-height:420px;font:13px/1.5 ui-monospace,Menlo,Consolas,monospace;background:#12142a;color:#e6e8ff;padding:12px;border-radius:10px}
+.tw{overflow-x:auto;margin:0 0 8px}
+.tw table{border-collapse:collapse;min-width:100%}
+.tw th,.tw td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top;font-size:14px}
+.tw th{background:var(--blue-t)}
+.tools .lab{margin-top:16px;font-size:13px;font-weight:700;color:var(--mute)}
+.log{margin:8px 0 0;padding:0;list-style:none;font-size:13.5px}
+.log li{display:flex;gap:8px;flex-wrap:wrap;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)}
+.flow{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px;font-weight:700;font-size:14px}
+.flow span{border:2px solid var(--deep);border-radius:999px;padding:3px 12px;background:var(--purple-t);color:#3b1380}
+.flow i{font-style:normal;color:var(--mute)}
+.wfstep{border:2px solid var(--line);border-radius:14px;padding:10px 12px;margin-top:10px;background:#fff}
+.wfstep.run{border-color:var(--purple)}
+.wfstep.done{border-color:var(--ok)}
+.wfstep h4{margin:0;font-size:15px;display:flex;gap:8px;flex-wrap:wrap;align-items:baseline}
+.wfstep .st{font-size:12.5px;font-weight:700;color:var(--mute)}
+.wfstep .wo{margin-top:8px}
+.libfilters{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:10px;margin:12px 0 16px}
+@media(max-width:560px){.libfilters{grid-template-columns:1fr}}
+.libgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:16px;align-items:start}
+.pc h3{font-size:18px;overflow-wrap:anywhere}
+.ptext{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--bg);border-radius:10px;padding:8px 10px;margin:8px 0;font-size:14px;max-height:200px;overflow:auto}
+.ph{background:var(--purple-t);color:var(--deep);border-radius:6px;padding:0 4px;font-weight:700}
+.pc .why{font-size:13.5px;color:var(--mute)}
+.pc details{margin-top:8px}
+.op{position:fixed;inset:0;z-index:75;display:grid;place-items:center;padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:rgba(24,27,43,.55)}
+.op-card{width:100%;max-width:560px;max-height:100%;overflow:auto;background:#fff;border:2px solid var(--deep);border-radius:20px;padding:20px}
+.op-card h2{font-size:24px}
+.filters2{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) auto auto;gap:10px;align-items:center;margin:-6px 0 16px}
+.filters2 .bub{white-space:nowrap}
+@media(max-width:780px){.filters2{grid-template-columns:1fr 1fr}.filters2 select:first-child{grid-column:1/-1}}
+.rate{color:#b45309;font-weight:700}
+.stars{color:#d97706;letter-spacing:1px}
+.rvform{margin-top:12px;border-top:2px dashed var(--line);padding-top:10px}
+.rvform textarea{min-height:60px}
+.spick{display:flex;gap:2px;margin:4px 0 8px}
+.spick button{border:0;background:none;font-size:30px;line-height:1;padding:2px 4px;color:var(--mute);cursor:pointer}
+.spick button.on{color:#d97706}
+.spick button:focus-visible{outline:3px solid var(--blue);border-radius:6px}
+/* overlays */
+#toasts{position:fixed;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 62px);z-index:80;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;padding-inline:max(16px,env(safe-area-inset-left,0px))}
+.toast{background:var(--deep);color:#fff;padding:9px 18px;border-radius:999px;font-weight:700;box-shadow:0 10px 24px rgba(30,16,53,.3);animation:pop .25s ease;max-width:100%}
+.toast.bad{background:var(--bad)}
+.toast.bye{opacity:0;transition:opacity .4s}
+@keyframes pop{from{transform:translateY(-8px);opacity:0}to{transform:none;opacity:1}}
+#cbar{position:fixed;left:0;right:0;bottom:0;z-index:80;padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:#fff;border-top:2px solid var(--deep);display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;font-weight:700}
+.foot{text-align:center;color:var(--mute);font-size:13px;padding-block:6px 30px}
+@media(max-width:640px){.links{order:3;width:100%}.who span{max-width:120px}}
+@media(prefers-reduced-motion:reduce){.hero,.orb,.hero h1,.sk,.toast{animation:none!important}}
+</style>
+
+<nav class="nav" aria-label="Main">
+  <div class="in">
+    <div class="brandmini"><svg width="30" height="30" viewBox="0 0 52 52" aria-hidden="true"><circle cx="20" cy="26" r="16" fill="#2563eb" opacity=".9"/><circle cx="32" cy="26" r="16" fill="#7c3aed" opacity=".8"/></svg>Business Studio</div>
+    <div class="links">
+      <button class="nl on" data-v="feed">View posts</button>
+      <button class="nl" data-v="post">Post a business</button>
+      <button class="nl" data-v="logos">Logo maker</button>
+      <button class="nl" data-v="ai">AI assistant</button>
+      <button class="nl" data-v="lib">Prompt library</button>
+    </div>
+    <div class="who" id="who" hidden><img id="whoImg" alt=""><span id="whoName"></span></div>
+  </div>
+</nav>
+
+<header class="hero" id="hero">
+  <span class="orb" style="left:4%;top:18%;width:90px;height:90px;animation-duration:9s"></span>
+  <span class="orb" style="left:22%;top:66%;width:48px;height:48px;animation-delay:1.2s;animation-duration:7s"></span>
+  <span class="orb" style="left:48%;top:10%;width:34px;height:34px;animation-delay:2s;animation-duration:8s"></span>
+  <span class="orb" style="left:64%;top:56%;width:110px;height:110px;animation-delay:.5s;animation-duration:11s"></span>
+  <span class="orb" style="left:84%;top:14%;width:62px;height:62px;animation-delay:3s;animation-duration:9s"></span>
+  <span class="orb" style="left:92%;top:70%;width:40px;height:40px;animation-delay:1s;animation-duration:7s"></span>
+  <div class="in">
+    <h1>Business Studio</h1>
+    <span class="slogan"><b class="w1">It's your time</b> <b class="w2">to shine</b></span>
+    <p class="lead">A shared space for small businesses. Post yours with a description, pictures and contact details, get hearts and comments from your community, and design a logo along the way.</p>
+    <div class="cta">
+      <button class="btn" data-go="post">Post your business</button>
+      <button class="btn alt" data-go="logos">Make a logo</button>
+      <button class="btn alt" data-go="ai">Ask the AI</button>
+    </div>
+    <div class="stats" id="stats" aria-live="polite"></div>
+  </div>
+</header>
+
+<main class="in">
+  <div id="note" hidden></div>
+
+  <section class="view" id="view-feed">
+    <div class="sec-h"><h2>Posts from business owners</h2><span class="hint" id="feedHint"></span></div>
+    <div class="filters">
+      <input type="search" id="q" placeholder="Search by name, place or what they do" aria-label="Search businesses">
+      <select id="fcat" aria-label="Filter by category"></select>
+      <select id="fsort" aria-label="Sort businesses">
+        <option value="new">Newest first</option>
+        <option value="loved">Most reactions</option>
+        <option value="talk">Most comments</option>
+        <option value="rated">Top rated</option>
+      </select>
+      <select id="fwho" aria-label="Whose posts to show"><option value="all">Everyone's posts</option><option value="others">Other owners' posts</option><option value="mine">My posts</option></select>
+    </div>
+    <div class="filters2" id="locf">
+      <select id="fcountry" aria-label="Filter by country"></select>
+      <select id="fregion" aria-label="Filter by province or region"></select>
+      <select id="fcity" aria-label="Filter by city or town"></select>
+      <button class="bub p" id="fnear" type="button">Near me</button>
+      <button class="bub" id="fsave" type="button" hidden>Save as my location</button>
+      <button class="bub" id="fclr" type="button" hidden>Clear location</button>
+    </div>
+    <div id="feed"></div>
+    <div id="nomatch" class="card" hidden></div>
+    <div id="empty" class="card" hidden>
+      <div>
+        <h2>No businesses yet. Yours can be the first.</h2>
+        <p>Every business gets a storefront card with a logo, pictures, a description, and a place for hearts, laughs and comments. Claude can write the description, suggest pictures and design the logo for you.</p>
+        <div class="cta"><button class="btn" data-go="post">Post your business</button><button class="btn alt" data-go="logos">Make a logo</button></div>
+      </div>
+      <div><span class="exbadge">Example card, not a real listing</span><div id="exampleSlot"></div></div>
+    </div>
+  </section>
+
+  <section class="view" id="view-post" hidden>
+    <div class="sec-h"><h2 id="postTitle">Post your business</h2><span class="hint">Your draft is saved in this browser until you post it.</span></div>
+    <div class="compose">
+      <div class="card">
+        <label class="fld"><span>Business name</span><input type="text" id="f-name" maxlength="80" autocomplete="off" placeholder="e.g. Corner Loaf Bakery"></label>
+        <label class="fld"><span>Category</span><select id="f-cat"></select></label>
+        <label class="fld"><span>What you do or sell (a few facts the AI can use)</span><input type="text" id="f-facts" maxlength="200" placeholder="e.g. sourdough, seeded rolls, Saturday pastries, orders for offices"></label>
+
+        <label class="fld"><span>Description</span><textarea id="f-desc" maxlength="1200" placeholder="Tell people what you offer and why they will like it."></textarea></label>
+        <label class="fld"><span>Tell the AI what to focus on (optional)</span><input type="text" id="f-hint" maxlength="160" placeholder="e.g. friendly tone, mention free delivery, family owned"></label>
+        <div class="row mt"><button class="bub p" id="aiDesc">Write it for me</button><span class="hint" id="descCount"></span></div>
+
+        <label class="fld"><span>Tagline</span><input type="text" id="f-tag" maxlength="120" placeholder="One short line people will remember"></label>
+        <div class="row mt"><button class="bub p" id="aiTag">Suggest taglines</button></div>
+        <div class="chips" id="tagChips"></div>
+
+        <div class="sect">
+          <h3>Where you are</h3>
+          <label class="fld"><span>Country</span><select id="f-country"></select></label>
+          <div class="two">
+            <label class="fld"><span>Province, state or region</span><input type="text" id="f-region" maxlength="60" list="regionList" autocomplete="off" placeholder="Choose or type"></label>
+            <label class="fld"><span>City or town</span><input type="text" id="f-city" maxlength="60" autocomplete="off" placeholder="e.g. Johannesburg"></label>
+          </div>
+          <datalist id="regionList"></datalist>
+          <label class="fld"><span>Street address or area (optional)</span><input type="text" id="f-addr" maxlength="100" autocomplete="off" placeholder="e.g. 12 Main Road, Rosebank"></label>
+        </div>
+
+        <div class="sect">
+          <h3>How people can contact you</h3>
+          <p class="hint">Add at least one. They show as tap-to-contact buttons on your post.</p>
+          <div class="two">
+            <label class="fld"><span>Phone</span><input type="text" id="f-phone" maxlength="30" inputmode="tel" autocomplete="off"></label>
+            <label class="fld"><span>WhatsApp number</span><input type="text" id="f-wa" maxlength="30" inputmode="tel" autocomplete="off"></label>
+          </div>
+          <div class="two">
+            <label class="fld"><span>Email</span><input type="text" id="f-email" maxlength="120" inputmode="email" autocomplete="off" placeholder="hello@yourbusiness.com"></label>
+            <label class="fld"><span>Website</span><input type="text" id="f-web" maxlength="160" autocomplete="off" placeholder="yourbusiness.com"></label>
+          </div>
+          <label class="fld"><span>Opening hours (optional)</span><input type="text" id="f-hours" maxlength="120" placeholder="e.g. Mon to Fri 8am to 5pm, Sat 8am to 1pm"></label>
+        </div>
+
+        <div class="fld"><span style="display:block;font-size:13px;font-weight:700;color:var(--mute)">Logo</span>
+          <div class="logobox">
+            <div class="logo" id="logoPrev" aria-label="Logo preview"></div>
+            <button class="bub" id="goLogo">Design a logo</button>
+            <button class="bub" id="upLogo">Upload a logo</button>
+            <button class="bub danger" id="rmLogo" hidden>Remove</button>
+            <input type="file" id="logoFile" accept="image/png,image/jpeg,image/webp" hidden>
+          </div>
+        </div>
+
+        <div class="fld"><span style="display:block;font-size:13px;font-weight:700;color:var(--mute)">Pictures (up to 3)</span>
+          <div class="pedit" id="pedit"></div>
+          <div class="row mt">
+            <button class="bub" id="upPhoto">Add your photo</button>
+            <input type="file" id="photoFile" accept="image/png,image/jpeg,image/webp" multiple hidden>
+            <select id="scene" aria-label="Kind of picture to suggest" style="width:auto">
+              <option>Storefront</option><option>Products or services</option><option>People at work</option><option>Inside the space</option><option>Wide banner</option>
+            </select>
+            <button class="bub p" id="aiPic">Suggest a picture</button>
+          </div>
+          <p class="hint" style="margin-top:6px">Suggested pictures are illustrations drawn by Claude and are labelled that way on your post. Photos are resized to keep the post light.</p>
+        </div>
+
+        <div class="row mt" style="margin-top:18px">
+          <button class="btn" id="publish">Post</button>
+          <button class="bub" id="cancelEdit" hidden>Cancel editing</button>
+          <button class="bub" id="clearDraft">Clear form</button>
+        </div>
+      </div>
+      <div class="stick">
+        <p class="hint" style="margin-bottom:8px">Live preview</p>
+        <div id="pv"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="view-logos" hidden>
+    <div class="sec-h"><h2>Logo maker</h2><span class="hint">Claude designs one concept at a time. Edit it, ask for a different one, then use it or download it.</span></div>
+    <div class="card">
+      <div class="two">
+        <label class="fld"><span>Business name</span><input type="text" id="l-name" maxlength="60" autocomplete="off"></label>
+        <label class="fld"><span>What the business does</span><input type="text" id="l-what" maxlength="120" placeholder="e.g. neighbourhood bakery, mobile bike repair"></label>
+      </div>
+      <label class="fld"><span>Your own logo idea (optional)</span><textarea id="l-idea" maxlength="600" style="min-height:70px" placeholder="e.g. a rising sun over a loaf of bread, deep orange and cream"></textarea></label>
+      <div class="row mt"><button class="bub p" id="brainstorm" type="button">Brainstorm logo ideas</button><button class="bub p" id="genIdea" type="button">Write my logo prompt</button><span class="hint">Click an idea to design it.</span></div>
+      <div class="chips" id="ideaChips"></div>
+      <div class="fld"><span style="display:block;font-size:13px;font-weight:700;color:var(--mute)">Personality</span><div class="chips" id="vibes"></div></div>
+      <div class="two">
+        <label class="fld"><span>Style</span>
+          <select id="l-style"><option>Icon with the name</option><option>Icon only</option><option>Name only (wordmark)</option><option>Monogram</option><option>Badge or emblem</option></select></label>
+        <label class="fld"><span>Colours</span>
+          <select id="l-pal"><option value="auto">Let Claude choose</option><option value="warm">Warm</option><option value="cool">Cool</option><option value="earth">Earthy</option><option value="mono">One colour</option><option value="vivid">Vivid</option><option value="custom">My own colours</option></select></label>
+      </div>
+      <div class="row mt" id="customCols" hidden><span class="hint">Pick two</span><input type="color" id="l-c1" value="#2563eb" aria-label="First colour"><input type="color" id="l-c2" value="#7c3aed" aria-label="Second colour"></div>
+      <div class="row mt" style="margin-top:16px"><button class="btn" id="genLogo">Design my logo</button><span class="hint" id="logoStatus"></span></div>
+      <div class="lstage" id="lstage" hidden></div>
+    </div>
+  </section>
+  <section class="view" id="view-prof" hidden>
+    <div class="row"><button class="bub" id="prof-back" type="button">← Back to posts</button></div>
+    <div class="card" id="prof-head" style="margin-top:12px"></div>
+    <div class="card" id="prof-contact" style="margin-top:16px"></div>
+    <div class="sec-h" style="margin-top:20px"><h2>Posts</h2><span class="hint" id="prof-count"></span></div>
+    <div id="prof-posts"></div>
+  </section>
+
+  <section class="view" id="view-ai" hidden>
+    <div class="sec-h"><h2>AI assistant</h2><span class="hint">Ask in your own words. Answers are written by Claude.</span></div>
+    <div class="card">
+      <div class="starters" id="starters"></div>
+      <div class="row" style="margin-bottom:12px"><button class="bub p" id="aiSuggest" type="button">Suggest prompts for me</button><span class="hint">The AI writes prompts that fit your business. Click one to edit and send it.</span></div>
+      <div class="starters" id="aiSugg"></div>
+      <div class="chat" id="aiLog" role="log" aria-live="polite" aria-label="Conversation with the AI assistant"></div>
+      <div class="composeai">
+        <textarea id="aiIn" maxlength="1500" rows="2" placeholder="Ask for names, a description, logo ideas, a social media post…" aria-label="Your message"></textarea>
+        <button class="btn" id="aiSend" type="button">Send</button>
+      </div>
+      <div class="row mt">
+        <button class="bub p" id="aiImprove" type="button">Improve my prompt</button>
+        <label class="hint" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="aiCtx" checked> Use the details from my post form</label>
+        <button class="bub" id="aiClear" type="button" style="margin-left:auto">Clear chat</button>
+      </div>
+    </div>
+  </section>
+  <section class="view" id="view-lib" hidden>
+    <div class="sec-h"><h2>Prompt library</h2><span class="hint" id="libHint"></span></div>
+    <div class="card">
+      <details open>
+        <summary><b>How to write a stronger prompt</b></summary>
+        <ul class="tips">
+          <li><b>Give it a role.</b> "Act as a branding specialist" sets the point of view.</li>
+          <li><b>Add context.</b> Say who the business is, where it is and who it serves.</li>
+          <li><b>Name the format.</b> Ask for a table, a numbered list, JSON or two short paragraphs.</li>
+          <li><b>Set limits.</b> Word counts, tone and "do not invent prices" keep answers usable.</li>
+          <li><b>Show an example</b> when you want a particular style.</li>
+          <li><b>Iterate.</b> Generate, refine one thing at a time, and compare versions.</li>
+        </ul>
+      </details>
+    </div>
+    <div class="row mt tabs" style="margin-top:16px">
+      <button class="bub on" id="lib-tab-starter" type="button">Starter prompts</button>
+      <button class="bub" id="lib-tab-mine" type="button">My library</button>
+    </div>
+    <div class="libfilters">
+      <input type="search" id="lib-q" placeholder="Search prompts" aria-label="Search prompts">
+      <select id="lib-cat" aria-label="Filter by category"></select>
+    </div>
+    <div class="libgrid" id="lib-grid"></div>
+    <div class="card" id="lib-empty" hidden></div>
+    <details class="card" id="lib-add" style="margin-top:16px">
+      <summary><b>Add my own prompt</b></summary>
+      <label class="fld"><span>Title</span><input type="text" id="lib-new-t" maxlength="80" autocomplete="off" placeholder="e.g. Friday special announcement"></label>
+      <div class="two">
+        <label class="fld"><span>Category</span><select id="lib-new-c"></select></label>
+        <label class="fld"><span>Produces</span><select id="lib-new-k"><option value="text">Text</option><option value="svg">Illustration</option><option value="code">Code</option></select></label>
+      </div>
+      <label class="fld"><span>Prompt (you can use {biz}, {what}, {place}, {audience}, {tone}, {topic})</span><textarea id="lib-new-p" maxlength="3000" style="min-height:120px"></textarea></label>
+      <div class="row mt"><button class="btn" id="lib-new-save" type="button">Save to my library</button></div>
+    </details>
+  </section>
+</main>
+
+<p class="foot in">Be kind in comments. Pictures marked Illustration were drawn by Claude and may not show the real business.</p>
+<div class="op" id="op" role="dialog" aria-modal="true" aria-labelledby="opT" hidden>
+  <div class="op-card">
+    <h2 id="opT">What would you like to do today?</h2>
+    <p class="hint" style="margin-top:6px">Type a prompt for the AI assistant, or pick one. The answer opens in the assistant.</p>
+    <div class="starters" id="op-starters" style="margin-top:12px"></div>
+    <textarea id="op-in" maxlength="1500" style="min-height:90px" placeholder="e.g. Write a friendly description for my bakery" aria-label="Your prompt"></textarea>
+    <div class="row mt"><button class="btn" id="op-go" type="button">Ask the AI</button><button class="bub" id="op-skip" type="button">Skip for now</button></div>
+  </div>
+</div>
+<div id="toasts" role="status" aria-live="polite"></div>
+<div id="cbar" hidden></div>
+
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e};
+const clone=o=>JSON.parse(JSON.stringify(o));
+const rid=()=>Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-3);
+const hasClaude=typeof claude!=="undefined"&&claude&&typeof claude.use==="function";
+
+const CATS=["Food & drink","Retail & shopping","Beauty & wellness","Home & repair","Creative & design","Tech & digital","Education & coaching","Health & fitness","Events & entertainment","Professional services","Other"];
+const RX={like:["👍","Like"],heart:["❤️","Love"],funny:["😂","Funny"],sad:["😢","Sad"]};
+const MAX_POSTS=6,MAX_PICS=3;
+const COUNTRIES=[["Angola","244"],["Argentina","54"],["Australia","61"],["Bangladesh","880"],["Belgium","32"],["Botswana","267"],["Brazil","55"],["Canada","1"],["Chile","56"],["China","86"],["Colombia","57"],["DR Congo","243"],["Denmark","45"],["Egypt","20"],["Eswatini","268"],["Ethiopia","251"],["France","33"],["Germany","49"],["Ghana","233"],["India","91"],["Indonesia","62"],["Ireland","353"],["Israel","972"],["Italy","39"],["Japan","81"],["Kenya","254"],["Lesotho","266"],["Malawi","265"],["Malaysia","60"],["Mexico","52"],["Morocco","212"],["Mozambique","258"],["Namibia","264"],["Netherlands","31"],["New Zealand","64"],["Nigeria","234"],["Norway","47"],["Pakistan","92"],["Philippines","63"],["Poland","48"],["Portugal","351"],["Rwanda","250"],["Saudi Arabia","966"],["Singapore","65"],["South Africa","27"],["South Korea","82"],["Spain","34"],["Sri Lanka","94"],["Sweden","46"],["Switzerland","41"],["Tanzania","255"],["Thailand","66"],["Turkey","90"],["Uganda","256"],["United Arab Emirates","971"],["United Kingdom","44"],["United States","1"],["Vietnam","84"],["Zambia","260"],["Zimbabwe","263"],["Other",""]];
+const CODE={};COUNTRIES.forEach(c=>{CODE[c[0]]=c[1]});
+const REGIONS={"South Africa":["Eastern Cape","Free State","Gauteng","KwaZulu-Natal","Limpopo","Mpumalanga","North West","Northern Cape","Western Cape"]};
+function locText(d){const a=[(d.city||"").trim(),(d.region||"").trim()];if(d.country==="Online")a.push("Online only");else if(d.country)a.push(d.country);return a.filter(Boolean).join(", ").slice(0,160)}
+function toIntl(num,country){const d=String(num).replace(/\D/g,"");if(/^\s*\+/.test(num))return d;if(d.startsWith("00"))return d.slice(2);const cc=CODE[country]||"";if(d.startsWith("0")&&cc)return cc+d.slice(1);return d}
+const EMAIL_RE=/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]{2,}$/;
+function fixWeb(v){v=String(v||"").trim();if(!v)return "";return /^https?:\/\//i.test(v)?v:"https://"+v}
+function safeWeb(v){try{const u=new URL(fixWeb(v));return /^https?:$/.test(u.protocol)&&u.hostname.indexOf(".")>0?u.href:null}catch(e){return null}}
+function cleanContacts(){
+  const v=s=>(s||"").trim(),dg=s=>s.replace(/\D/g,""),o={};
+  const ph=v(D.phone),wa=v(D.wa),em=v(D.email),web=v(D.web),hrs=v(D.hours);
+  const okNum=n=>/^\+?[\d\s().-]{6,30}$/.test(n)&&dg(n).length>=7&&dg(n).length<=15;
+  if(ph){if(!okNum(ph))return {err:["Check the phone number: use digits, spaces and an optional +","f-phone"]};o.phone=ph}
+  if(wa){if(!okNum(wa))return {err:["Check the WhatsApp number: use digits, spaces and an optional +","f-wa"]};o.wa=wa}
+  if(em){if(!EMAIL_RE.test(em))return {err:["Check the email address","f-email"]};o.email=em}
+  if(web){const u=safeWeb(web);if(!u)return {err:["Check the website address","f-web"]};o.web=u.slice(0,160)}
+  if(hrs)o.hours=hrs.slice(0,120);
+  return {ct:o,any:!!(o.phone||o.wa||o.email||o.web)};
+}
+function syncCountry(){
+  const c=$("f-country").value,dl=$("regionList");dl.innerHTML="";
+  (REGIONS[c]||[]).forEach(r=>{const o=document.createElement("option");o.value=r;dl.append(o)});
+  const cc=CODE[c];
+  $("f-phone").placeholder=cc?"e.g. 0"+"82 123 4567 or +"+cc+" 82 123 4567":"Include the country code, e.g. +27 82 123 4567";
+  $("f-wa").placeholder=cc?"Starts with 0 or +"+cc:"Include the country code";
+  $("f-city").placeholder=c==="Online"?"Optional":"e.g. Johannesburg";
+}
+
+/* ---------- state ---------- */
+let db=null,user=null,me={id:null,name:"",avatarUrl:"",isOwner:false};
+let canWrite=null,localMode=false;
+const S={posts:[],reactions:[],comments:[],reviews:[],list:[],counts:{},cm:{},rv:{}};
+const OWN={posts:{f:"items",d:{},ready:false,pending:0},comments:{f:"c",d:{},ready:false,pending:0},reactions:{f:"r",d:{},ready:false,pending:0},reviews:{f:"v",d:{},ready:false,pending:0}};
+const ui={open:{},more:{},draft:{},pic:{},all:{},rv:{},rvall:{},rvd:{}};
+let PROF={};
+const filt={q:"",cat:"All",sort:"new",who:"all",country:"",region:"",city:""};
+const picsCache=new Map();
+let D=blankDraft();
+function blankDraft(){return {id:null,name:"",category:CATS[0],country:"",region:"",city:"",addr:"",phone:"",wa:"",email:"",web:"",hours:"",facts:"",tagline:"",desc:"",logo:null,imgs:[]}}
+
+/* ---------- helpers ---------- */
+const str=(v,n)=>typeof v==="string"?v.slice(0,n):"";
+const canPost=()=>!!(db&&me.id&&canWrite!==false);
+function toast(t,bad){const e=el("div","toast"+(bad?" bad":""),t);$("toasts").append(e);setTimeout(()=>e.classList.add("bye"),bad?4200:2000);setTimeout(()=>e.remove(),bad?4700:2500)}
+function ago(ts){const s=Math.max(0,(Date.now()-ts)/1000);if(s<60)return "just now";if(s<3600)return Math.floor(s/60)+" min ago";if(s<86400)return Math.floor(s/3600)+" h ago";if(s<2592000)return Math.floor(s/86400)+" d ago";return new Date(ts).toLocaleDateString()}
+function confirmBar(msg,yes,fn){const c=$("cbar");c.innerHTML="";c.hidden=false;const y=el("button","bub danger",yes),n=el("button","bub","Cancel");y.onclick=()=>{c.hidden=true;fn()};n.onclick=()=>{c.hidden=true};c.append(el("span","",msg),y,n);n.focus()}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")$("cbar").hidden=true});
+function errMsg(e){const c=e&&e.code;
+  if(c==="too_big")return "That is too large to save. Remove a picture or shorten the text.";
+  if(c==="invalid_argument")return "You do not have permission to do that here.";
+  if(c==="quota_exceeded")return "Business Studio is full right now. Try again later.";
+  if(c==="resource_exhausted")return "Too many requests. Wait a moment and try again.";
+  if(c==="revoked")return "Your access changed. Reload the page.";
+  return "Something went wrong. Please try again."}
+function aiErr(e){const c=e&&e.code;
+  if(c==="noai")return "Drawing pictures needs this page to be open in Claude.";
+  if(c==="not_granted")return "Permission was declined.";
+  if(c==="rate_limited")return "Too many requests. Wait a moment and try again.";
+  if(c==="badsvg")return "Could not read a picture from the reply. Please try again.";
+  if(c==="toobig")return "That picture came out too detailed to save. Please try again.";
+  return "Something went wrong. Please try again."}
+
+/* ---------- svg + images ---------- */
+const svgCache=new Map();
+function cleanSvg(raw,max){
+  const key=max+"|"+raw;if(svgCache.has(key))return svgCache.get(key);
+  let out=null;
+  try{
+    const m=String(raw).match(/<svg[\s\S]*<\/svg>/i);
+    if(m){
+      let src=m[0].replace(/&nbsp;/g," ").replace(/&(?!#?\w+;)/g,"&amp;");
+      if(!/xmlns=/.test(src.slice(0,400)))src=src.replace(/<svg/i,'<svg xmlns="http://www.w3.org/2000/svg"');
+      const doc=new DOMParser().parseFromString(src,"image/svg+xml");
+      const root=doc.documentElement;
+      if(!doc.querySelector("parsererror")&&root&&root.nodeName.toLowerCase()==="svg"){
+        root.querySelectorAll("script,foreignObject,iframe,object,embed,audio,video,image").forEach(n=>n.remove());
+        root.querySelectorAll("style").forEach(s=>{s.textContent=s.textContent.replace(/@import[^;]*;?/gi,"").replace(/url\(\s*['"]?(https?:|data:)[^)]*\)/gi,"none")});
+        [root,...root.querySelectorAll("*")].forEach(n=>{[...n.attributes].forEach(a=>{const nm=a.name.toLowerCase(),v=a.value.trim();
+          if(nm.startsWith("on"))n.removeAttribute(a.name);
+          else if((nm==="href"||nm==="xlink:href")&&!v.startsWith("#"))n.removeAttribute(a.name);
+          else if(/url\s*\(\s*['"]?\s*(https?:|data:|javascript:)/i.test(v))n.removeAttribute(a.name)})});
+        if(!root.getAttribute("viewBox")){const w=parseFloat(root.getAttribute("width")),h=parseFloat(root.getAttribute("height"));root.setAttribute("viewBox",w&&h?"0 0 "+w+" "+h:"0 0 400 400")}
+        root.removeAttribute("width");root.removeAttribute("height");
+        const s=new XMLSerializer().serializeToString(root);
+        out=s.length<=max?s:"TOOBIG";
+      }
+    }
+  }catch(e){out=null}
+  svgCache.set(key,out);return out;
+}
+const svgUri=s=>"data:image/svg+xml;charset=utf-8,"+encodeURIComponent(s);
+const isPhoto=d=>typeof d==="string"&&d.length<130000&&/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(d);
+function imgSrc(i){if(!i)return null;if(i.k==="svg"){const s=cleanSvg(i.d,60000);return s&&s!=="TOOBIG"?svgUri(s):null}return i.k==="photo"&&isPhoto(i.d)?i.d:null}
+function logoSrc(l){if(!l)return null;if(l.k==="svg"){const s=cleanSvg(l.d,20000);return s&&s!=="TOOBIG"?svgUri(s):null}return l.k==="img"&&isPhoto(l.d)?l.d:null}
+function loadCanvas(file,max){return new Promise((res,rej)=>{const fr=new FileReader();fr.onerror=()=>rej(new Error("read"));fr.onload=()=>{const im=new Image();im.onerror=()=>rej(new Error("img"));im.onload=()=>{const sc=Math.min(1,max/Math.max(im.width,im.height)),w=Math.max(1,Math.round(im.width*sc)),h=Math.max(1,Math.round(im.height*sc)),c=document.createElement("canvas");c.width=w;c.height=h;const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,w,h);x.drawImage(im,0,0,w,h);res(c)};im.src=fr.result};fr.readAsDataURL(file)})}
+async function shrink(file,max,limit){const c=await loadCanvas(file,max);for(const q of [0.74,0.6,0.48,0.36]){const d=c.toDataURL("image/jpeg",q);if(d.length<=limit)return d}return null}
+
+/* ---------- shared data ---------- */
+function enqueue(o,fn){const run=(o.q||Promise.resolve()).then(fn);o.q=run.catch(()=>{});return run}
+async function mutate(col,fn){
+  const o=OWN[col],next=fn(clone(o.d));
+  if(JSON.stringify(next).length>235000){const e=new Error("big");e.code="too_big";throw e}
+  o.d=next;o.pending++;sched();
+  try{await enqueue(o,()=>db.doc(col+"/"+me.id).set({[o.f]:o.d,ts:Date.now()}))}
+  finally{o.pending--;sched()}
+}
+let rt=0;function sched(){clearTimeout(rt);rt=setTimeout(rebuild,40)}
+function docsOf(col){
+  const arr=S[col].map(d=>({id:d.id,data:d.data()||{}}));
+  const o=OWN[col];
+  if(me.id&&o.ready){const own={[o.f]:o.d},i=arr.findIndex(x=>x.id===me.id);if(i>=0)arr[i]={id:me.id,data:own};else arr.push({id:me.id,data:own})}
+  return arr;
+}
+function normCt(c){const o={};if(c&&typeof c==="object"){["phone","wa"].forEach(k=>{if(typeof c[k]==="string")o[k]=c[k].slice(0,30)});if(typeof c.email==="string")o.email=c.email.slice(0,120);if(typeof c.web==="string")o.web=c.web.slice(0,160);if(typeof c.hours==="string")o.hours=c.hours.slice(0,120)}return o}
+function normPost(p){
+  if(!p||typeof p!=="object")return null;
+  const name=str(p.name,80).trim();if(!name)return null;
+  const q={name,category:CATS.includes(p.category)?p.category:"Other",location:str(p.location,160),country:str(p.country,60),region:str(p.region,60),city:str(p.city,60),addr:str(p.addr,100),ct:normCt(p.ct),tagline:str(p.tagline,120),desc:str(p.desc,1200),contact:str(p.contact,160),
+    picCount:Math.min(MAX_PICS,Math.max(0,Number(p.pics)||0)),ts:Number(p.ts)||0,ed:Number(p.ed)||0,logo:null};
+  if(p.logo&&typeof p.logo==="object"&&typeof p.logo.d==="string"&&(p.logo.k==="svg"||p.logo.k==="img"))q.logo={k:p.logo.k,d:p.logo.d};
+  return q;
+}
+function rebuild(){
+  const posts=[],counts={},cm={};
+  docsOf("posts").forEach(({id,data})=>{const it=data.items;if(!it||typeof it!=="object")return;Object.keys(it).forEach(k=>{const p=normPost(it[k]);if(p){p.id=k;p.uid=id;posts.push(p)}})});
+  docsOf("reactions").forEach(({data})=>{const r=data.r;if(!r||typeof r!=="object")return;Object.keys(r).forEach(pid=>{const t=r[pid];if(!RX[t])return;(counts[pid]=counts[pid]||{like:0,heart:0,funny:0,sad:0})[t]++})});
+  docsOf("comments").forEach(({id,data})=>{const c=data.c;if(!c||typeof c!=="object")return;Object.keys(c).forEach(k=>{const x=c[k];if(!x||typeof x.p!=="string"||typeof x.t!=="string")return;(cm[x.p]=cm[x.p]||[]).push({id:k,uid:id,t:x.t.slice(0,500),ts:Number(x.ts)||0})})});
+  Object.keys(cm).forEach(k=>cm[k].sort((a,b)=>a.ts-b.ts));
+  const owner={};posts.forEach(p=>{owner[p.id]=p.uid});
+  const rv={};
+  docsOf("reviews").forEach(({id,data})=>{const r=data.v;if(!r||typeof r!=="object")return;Object.keys(r).forEach(pid=>{const x=r[pid];if(!x||owner[pid]===undefined||owner[pid]===id)return;const st=Math.round(Number(x.s));if(!(st>=1&&st<=5))return;(rv[pid]=rv[pid]||[]).push({uid:id,s:st,t:str(x.t,300),ts:Number(x.ts)||0})})});
+  Object.keys(rv).forEach(k=>rv[k].sort((a,b)=>b.ts-a.ts));
+  S.list=posts;S.counts=counts;S.cm=cm;S.rv=rv;
+  updateStats();renderFeed();fillNames();
+  if(!$("view-prof").hidden)refreshProfile();
+}
+const ratingOf=pid=>{const l=S.rv[pid]||[];return l.length?{avg:l.reduce((a,x)=>a+x.s,0)/l.length,n:l.length}:{avg:0,n:0}};
+const starStr=n=>"★★★★★".slice(0,n)+"☆☆☆☆☆".slice(0,5-n);
+const norm=v=>String(v||"").trim().toLowerCase();
+const total=pid=>{const c=S.counts[pid];return c?c.like+c.heart+c.funny+c.sad:0};
+function updateStats(){
+  const n=S.list.length,r=S.list.reduce((a,p)=>a+total(p.id),0),c=S.list.reduce((a,p)=>a+(S.cm[p.id]?S.cm[p.id].length:0),0);
+  const s=$("stats");s.innerHTML="";
+  [[n,n===1?"business":"businesses"],[r,r===1?"reaction":"reactions"],[c,c===1?"comment":"comments"]].forEach(([v,l])=>{const d=el("span");d.append(el("b","",String(v)),document.createTextNode(" "+l));s.append(d)});
+}
+
+/* ---------- offline copy: browser storage stands in for the shared database ---------- */
+function makeLocalDb(){
+  const KEY="ms_local_db";let S={};try{S=JSON.parse(localStorage.getItem(KEY)||"{}")||{}}catch(e){}
+  const subs=[],cp=v=>v===undefined?undefined:JSON.parse(JSON.stringify(v));
+  const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){throw {code:"too_big"}}};
+  const snapFor=col=>{const pre=col+"/";return {docs:Object.keys(S).filter(k=>k.startsWith(pre)&&k.indexOf("/",pre.length)<0).map(k=>({id:k.slice(pre.length),data:()=>cp(S[k])}))}};
+  const notify=()=>subs.forEach(x=>{try{x.cb(snapFor(x.col))}catch(e){}});
+  const doc=path=>({
+    get:async()=>({exists:Object.prototype.hasOwnProperty.call(S,path),data:()=>cp(S[path])}),
+    set:async d=>{const had=Object.prototype.hasOwnProperty.call(S,path),old=S[path];S[path]=cp(d);try{save()}catch(e){if(had)S[path]=old;else delete S[path];throw e}setTimeout(notify,0)},
+    delete:async()=>{delete S[path];try{save()}catch(e){}setTimeout(notify,0)}
+  });
+  return {doc,collection:col=>({limit(){return this},onSnapshot(cb){subs.push({col,cb});setTimeout(()=>cb(snapFor(col)),0);return()=>{}}})};
+}
+
+/* ---------- names ---------- */
+async function fillNames(){
+  if(!user&&!localMode)return;
+  const nodes=[...document.querySelectorAll("[data-uid]")].filter(n=>n.dataset.uid&&n.dataset.uid!=="ex"&&n.dataset.uid!=="me");
+  const ids=[...new Set(nodes.map(n=>n.dataset.uid))];if(!ids.length)return;
+  let ps={};if(user){try{ps=await user.profiles(ids)}catch(e){}}
+  nodes.forEach(n=>{const p=ps[n.dataset.uid]||{},pf=PROF[n.dataset.uid];if(n.tagName==="IMG"){if(p.avatarUrl)n.src=p.avatarUrl;return}n.textContent=(p.isMe||(localMode&&n.dataset.uid===me.id))?"You":((pf&&pf.name)||p.name||"Someone")});
+}
+
+/* ---------- cards ---------- */
+function logoEl(logo,name){
+  const d=el("div","logo"),src=logoSrc(logo);
+  if(src){const i=el("img");i.alt=(name||"Business")+" logo";i.src=src;d.append(i)}else d.textContent=(name||"?").trim().charAt(0).toUpperCase()||"?";
+  return d;
+}
+function galleryEl(imgs){
+  const wrap=el("div"),main=el("div","pmain"),im=el("img"),tag=el("span","ill","Illustration");
+  main.append(im,tag);wrap.append(main);
+  const valid=imgs.map(i=>({i,src:imgSrc(i)})).filter(x=>x.src);
+  if(!valid.length)return null;
+  const show=k=>{im.src=valid[k].src;im.alt="Business picture "+(k+1);tag.hidden=valid[k].i.k!=="svg";[...wrap.querySelectorAll(".thumbs button")].forEach((b,j)=>b.classList.toggle("on",j===k))};
+  if(valid.length>1){const t=el("div","thumbs");valid.forEach((v,k)=>{const b=el("button");b.type="button";b.setAttribute("aria-label","Show picture "+(k+1));const ti=el("img");ti.alt="";ti.src=v.src;b.append(ti);b.onclick=()=>show(k);t.append(b)});wrap.append(t)}
+  show(0);return wrap;
+}
+function picsFor(p){
+  const key=p.uid+"/"+p.id+"/"+p.ts+"/"+p.ed;
+  if(picsCache.has(key))return picsCache.get(key);
+  const pr=db.doc("pics/"+p.uid+"/p/"+p.id).get().then(s=>{const d=s.exists?s.data():null;const a=d&&Array.isArray(d.imgs)?d.imgs.slice(0,MAX_PICS).filter(i=>i&&typeof i.d==="string"&&(i.k==="svg"||i.k==="photo")).map(i=>({k:i.k,d:i.d,c:str(i.c,80)})):[];return a}).catch(()=>{picsCache.delete(key);return []});
+  picsCache.set(key,pr);return pr;
+}
+function renderContact(c,v){
+  if(!v)return;
+  const box=el("p","contact");box.append(document.createTextNode("Contact: "));
+  let ok=false;try{const u=new URL(v);ok=u.protocol==="https:"||u.protocol==="http:"}catch(e){}
+  if(ok){const a=el("a","",v);a.href=v;a.target="_blank";a.rel="noopener nofollow ugc";box.append(a)}else box.append(document.createTextNode(v));
+  c.append(box);
+}
+function renderContacts(c,p){
+  const pc=p.ct||{},box=el("div","cbox");let any=false;
+  if(p.addr){box.append(el("p","cline","Address: "+p.addr));any=true}
+  if(pc.hours){box.append(el("p","cline","Hours: "+pc.hours));any=true}
+  const acts=el("div","cacts");
+  const add=(cls,label,href,ext)=>{const a=el("a","cbtn"+(cls?" "+cls:""),label);a.href=href;if(ext){a.target="_blank";a.rel="noopener nofollow ugc"}acts.append(a)};
+  if(pc.phone&&/^\+?[\d\s().-]{6,30}$/.test(pc.phone))add("","Call "+pc.phone,"tel:"+pc.phone.replace(/[^\d+]/g,""),false);
+  if(pc.wa&&/^\+?[\d\s().-]{6,30}$/.test(pc.wa)){const n=toIntl(pc.wa,p.country);if(n.length>=7&&n.length<=15)add("wa","WhatsApp "+pc.wa,"https://wa.me/"+n,true)}
+  if(pc.email&&EMAIL_RE.test(pc.email))add("","Email "+pc.email,"mailto:"+encodeURIComponent(pc.email).replace(/%40/g,"@"),false);
+  if(pc.web){const u=safeWeb(pc.web);if(u)add("","Visit website",u,true)}
+  if(acts.childNodes.length){box.append(acts);any=true}
+  if(any)c.append(box);
+  else if(p.contact)renderContact(c,p.contact);
+}
+function buildCard(p,opt){
+  opt=opt||{};
+  const c=el("article","card biz");c.append(el("div","awn"));
+  const b=el("div","bz");c.append(b);
+  const head=el("div","bh");head.append(logoEl(p.logo,p.name));
+  const t=el("div","bt");t.append(el("h3","",p.name||"Your business name"));
+  const meta=el("div","bm");meta.append(el("span","cat",p.category||CATS[0]));if(p.location)meta.append(el("span","",p.location));
+  if(!opt.preview&&!opt.example){const r0=ratingOf(p.id);if(r0.n)meta.append(el("span","rate","★ "+r0.avg.toFixed(1)+" ("+r0.n+")"))}
+  t.append(meta);
+  const by=el("div","by");
+  if(opt.preview||opt.example){by.append(el("span","",opt.example?"Posted by a neighbour":"Posted by you"))}
+  else{const av=el("img");av.alt="";av.dataset.uid=p.uid;av.src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";by.append(av,document.createTextNode("Posted by "));const nm=el("b","","Someone");nm.dataset.uid=p.uid;by.append(nm,document.createTextNode(" · "+ago(p.ts)+(p.ed?" (edited)":"")));const pv=el("button","more","View profile");pv.type="button";pv.onclick=()=>openProfile(p.uid);by.append(pv)}
+  t.append(by);head.append(t);b.append(head);
+  if(p.tagline)b.append(el("p","tagl",p.tagline));
+  const slot=el("div","pics");slot.hidden=true;b.append(slot);
+  if(opt.imgs){const g=galleryEl(opt.imgs);if(g){slot.append(g);slot.hidden=false}}
+  else if(!opt.preview&&!opt.example&&p.picCount&&db){slot.hidden=false;const sk=el("div","pmain sk");slot.append(sk);picsFor(p).then(a=>{const g=galleryEl(a);slot.innerHTML="";if(g)slot.append(g);else slot.hidden=true})}
+  if(p.desc){
+    const key=p.uid+":"+p.id;const d=el("p","desc"+(p.desc.length>240&&!ui.more[key]&&!opt.preview&&!opt.example?" clamp":""),p.desc);b.append(d);
+    if(p.desc.length>240&&!opt.preview&&!opt.example){const m=el("button","more",ui.more[key]?"Show less":"Read more");m.onclick=()=>{ui.more[key]=!ui.more[key];d.classList.toggle("clamp",!ui.more[key]);m.textContent=ui.more[key]?"Show less":"Read more"};b.append(m)}
+  }
+  renderContacts(b,p);
+  if(opt.preview||opt.example)return c;
+
+  const key=p.uid+":"+p.id,counts=S.counts[p.id]||{like:0,heart:0,funny:0,sad:0},mine=OWN.reactions.d[p.id];
+  const bar=el("div","rxbar");bar.setAttribute("role","group");bar.setAttribute("aria-label","Reactions");
+  Object.keys(RX).forEach(k=>{
+    const x=el("button","rx"+(mine===k?" on":""));x.type="button";x.setAttribute("aria-pressed",mine===k?"true":"false");x.title=RX[k][1];x.setAttribute("aria-label",RX[k][1]+", "+counts[k]);
+    x.append(el("span","e",RX[k][0]),el("span","",String(counts[k])));x.disabled=!canPost();
+    x.onclick=()=>react(p.id,k);bar.append(x);
+  });
+  const list=S.cm[p.id]||[];
+  const isOpen=ui.open[key]!==false;
+  const cLabel=o=>(o?"Hide":"Show")+" comments ("+list.length+")";
+  const ct=el("button","bub p",cLabel(isOpen));ct.type="button";ct.setAttribute("aria-expanded",isOpen?"true":"false");
+  const sh=el("button","bub","Share");sh.type="button";
+  sh.onclick=async()=>{const pc=p.ct||{};const t=[p.name,p.tagline,p.location,pc.phone||pc.wa||pc.email||pc.web||""].filter(Boolean).join(" | ");try{await navigator.clipboard.writeText(t);toast("Details copied")}catch(e){toast("Copy was blocked here",true)}};
+  const rr=ratingOf(p.id),rvb=el("button","bub",rr.n?"★ "+rr.avg.toFixed(1)+" · "+rr.n+" review"+(rr.n===1?"":"s"):"Rate this business");rvb.type="button";rvb.setAttribute("aria-expanded",ui.rv[key]?"true":"false");
+  bar.append(ct,rvb,sh);b.append(bar);
+  const rpanel=el("div","cmts");rpanel.hidden=!ui.rv[key];b.append(rpanel);fillReviews(rpanel,p,key);
+  rvb.onclick=()=>{ui.rv[key]=!ui.rv[key];rpanel.hidden=!ui.rv[key];rvb.setAttribute("aria-expanded",ui.rv[key]?"true":"false")};
+  const panel=el("div","cmts");panel.hidden=!isOpen;b.append(panel);
+  panel.append(el("h4","mini","Comments ("+list.length+")"));
+  ct.onclick=()=>{const o=ui.open[key]===false;ui.open[key]=o;panel.hidden=!o;ct.textContent=cLabel(o);ct.setAttribute("aria-expanded",o?"true":"false");if(o){const i=panel.querySelector("textarea");if(i)i.focus()}};
+  const showAll=!!ui.all[key]||list.length<=3,shown=showAll?list:list.slice(-3);
+  if(!showAll){const va=el("button","more","View all "+list.length+" comments");va.type="button";va.onclick=()=>{ui.all[key]=true;renderFeed()};panel.append(va)}
+  shown.forEach(cmt=>{
+    const r=el("div","cm"),av=el("img");av.alt="";av.dataset.uid=cmt.uid;av.src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
+    const bd=el("div","bd"),nm=el("div","nm"),n=el("span","","Someone");n.dataset.uid=cmt.uid;nm.append(n," ",el("span","tm",ago(cmt.ts)));
+    bd.append(nm,el("div","tx",cmt.t));
+    if(cmt.uid===me.id||me.isOwner){const x=el("button","x",cmt.uid===me.id?"Delete":"Remove");x.type="button";x.onclick=()=>delComment(cmt);bd.append(x)}
+    r.append(av,bd);panel.append(r);
+  });
+  if(!list.length)panel.append(el("p","hint","No comments yet. Be the first to share your thoughts."));
+  if(canPost()){
+    const row=el("div","cin"),ta=el("textarea");ta.maxLength=500;ta.placeholder="Share your thoughts about this business";ta.setAttribute("aria-label","Add a comment on "+p.name);ta.dataset.cin=key;ta.value=ui.draft[key]||"";
+    const go=el("button","bub","Comment");go.type="button";
+    ta.oninput=()=>{ui.draft[key]=ta.value};
+    const send=()=>{const v=ta.value.trim();if(v)addComment(p,v,ta)};
+    go.onclick=send;ta.onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send()}};
+    row.append(ta,go);panel.append(row);
+  }else{panel.append(el("p","hint",me.id?"View-only access: you can read comments but not add them.":"Log in to add a comment."))}
+  if(p.uid===me.id){
+    const a=el("div","acts"),e=el("button","bub","Edit");e.type="button";e.onclick=()=>startEdit(p);a.append(e);b.append(a);
+  }
+  return c;
+}
+function sigOf(p){
+  const c=S.counts[p.id]||{},cl=(S.cm[p.id]||[]).map(x=>x.id+":"+x.t.length).join(",");
+  return JSON.stringify([p.name,p.category,p.location,p.tagline,p.desc,p.contact,p.picCount,p.ts,p.ed,p.logo?p.logo.d.length:0,p.location,JSON.stringify(p.ct),p.addr,c.like,c.heart,c.funny,c.sad,OWN.reactions.d[p.id]||"",cl,(S.rv[p.id]||[]).map(x=>x.uid+x.s+x.t.length+x.ts).join(","),!!ui.rv[p.uid+":"+p.id],!!ui.rvall[p.uid+":"+p.id],canPost(),me.isOwner,ui.open[p.uid+":"+p.id]!==false,!!ui.all[p.uid+":"+p.id]]);
+}
+let locSig="";
+function uniqBy(arr){const m=new Map();arr.forEach(v=>{const k=norm(v);if(k&&!m.has(k))m.set(k,String(v).trim())});return [...m.values()].sort((a,b)=>a.localeCompare(b))}
+function buildLocFilters(){
+  const inC=p=>!filt.country||norm(p.country)===norm(filt.country),inR=p=>!filt.region||norm(p.region)===norm(filt.region);
+  const countries=uniqBy(S.list.map(p=>p.country));
+  if(filt.country&&!countries.some(c=>norm(c)===norm(filt.country))){filt.country="";filt.region="";filt.city=""}
+  const regions=uniqBy(S.list.filter(inC).map(p=>p.region));
+  if(filt.region&&!regions.some(c=>norm(c)===norm(filt.region))){filt.region="";filt.city=""}
+  const cities=uniqBy(S.list.filter(p=>inC(p)&&inR(p)).map(p=>p.city));
+  if(filt.city&&!cities.some(c=>norm(c)===norm(filt.city)))filt.city="";
+  const sig=JSON.stringify([countries,regions,cities,filt.country,filt.region,filt.city]);
+  $("locf").hidden=!countries.length&&!regions.length&&!cities.length;
+  $("fsave").hidden=!filt.country;$("fclr").hidden=!(filt.country||filt.region||filt.city);
+  $("fnear").classList.toggle("on",!!filt.country&&locMatches(myLoc()));
+  if(sig===locSig)return;locSig=sig;
+  const fill=(id,all,list,val,lab)=>{const sel=$(id);sel.innerHTML="";const o0=el("option","",all);o0.value="";sel.append(o0);list.forEach(v=>{const o=el("option","",lab?lab(v):v);o.value=v;sel.append(o)});const hit=list.find(v=>norm(v)===norm(val));sel.value=hit||""};
+  fill("fcountry","All countries",countries,filt.country,v=>v==="Online"?"Online only":v);
+  fill("fregion","All provinces or regions",regions,filt.region);
+  fill("fcity","All cities and towns",cities,filt.city);
+}
+function myLoc(){
+  try{const v=JSON.parse(localStorage.getItem("ms_myloc")||"null");if(v&&v.country)return v}catch(e){}
+  const p=S.list.find(x=>x.uid===me.id&&x.country&&x.country!=="Online");
+  return p?{country:p.country,region:p.region||"",city:p.city||""}:null;
+}
+function locMatches(l){return !!l&&norm(l.country)===norm(filt.country)&&norm(l.region)===norm(filt.region)&&norm(l.city)===norm(filt.city)}
+function nearMe(){
+  const l=myLoc();
+  if(!l){
+    if(filt.country){try{localStorage.setItem("ms_myloc",JSON.stringify({country:filt.country,region:filt.region,city:filt.city}))}catch(e){}toast("Saved as your location. Press Near me any time.");renderFeed();return}
+    toast("Choose your country, province and city in the filters, then press Near me to save it as your location.",true);return;
+  }
+  const tries=[[l.country,l.region,l.city],[l.country,l.region,""],[l.country,"",""]].filter((t,i,a)=>t[0]&&(i===0||t[1]||i===2)&&a.findIndex(u=>u.join("|")===t.join("|"))===i);
+  for(const [c,r,ci] of tries){
+    const n=S.list.filter(p=>norm(p.country)===norm(c)&&(!r||norm(p.region)===norm(r))&&(!ci||norm(p.city)===norm(ci))).length;
+    if(n){filt.country=c;filt.region=r;filt.city=ci;locSig="";renderFeed();toast(n+" post"+(n===1?"":"s")+" near "+(ci||r||c)+(ci?"":" (wider area)"));return}
+  }
+  toast("No posts near you yet.",true);
+}
+$("fcountry").onchange=()=>{filt.country=$("fcountry").value;filt.region="";filt.city="";locSig="";renderFeed()};
+$("fregion").onchange=()=>{filt.region=$("fregion").value;filt.city="";locSig="";renderFeed()};
+$("fcity").onchange=()=>{filt.city=$("fcity").value;locSig="";renderFeed()};
+$("fnear").onclick=nearMe;
+$("fsave").onclick=()=>{try{localStorage.setItem("ms_myloc",JSON.stringify({country:filt.country,region:filt.region,city:filt.city}));toast("Saved as your location")}catch(e){toast("Could not save your location here",true)}renderFeed()};
+$("fclr").onclick=()=>{filt.country=filt.region=filt.city="";locSig="";renderFeed()};
+function visible(){
+  const q=filt.q.trim().toLowerCase();
+  let a=S.list.filter(p=>(filt.cat==="All"||p.category===filt.cat)&&(filt.who==="all"||(filt.who==="mine"?p.uid===me.id:p.uid!==me.id))&&(!filt.country||norm(p.country)===norm(filt.country))&&(!filt.region||norm(p.region)===norm(filt.region))&&(!filt.city||norm(p.city)===norm(filt.city))&&(!q||(p.name+" "+p.location+" "+p.category+" "+p.tagline+" "+p.desc).toLowerCase().includes(q)));
+  if(filt.sort==="loved")a.sort((x,y)=>total(y.id)-total(x.id)||y.ts-x.ts);
+  else if(filt.sort==="rated")a.sort((x,y)=>{const rx=ratingOf(x.id),ry=ratingOf(y.id);return ry.avg-rx.avg||ry.n-rx.n||y.ts-x.ts});
+  else if(filt.sort==="talk")a.sort((x,y)=>(S.cm[y.id]||[]).length-(S.cm[x.id]||[]).length||y.ts-x.ts);
+  else a.sort((x,y)=>y.ts-x.ts);
+  return a;
+}
+function renderFeed(){
+  buildLocFilters();
+  const box=$("feed"),list=visible(),old=new Map();
+  box.querySelectorAll(":scope>.biz").forEach(n=>old.set(n.dataset.key,n));
+  const nodes=list.map(p=>{
+    const key=p.uid+":"+p.id,sig=sigOf(p),prev=old.get(key);
+    if(prev&&prev.dataset.sig===sig)return prev;
+    let focus=null;
+    if(prev){const a=document.activeElement;if(a&&prev.contains(a)&&a.dataset&&a.dataset.cin){focus={s:a.selectionStart,e:a.selectionEnd}}}
+    const n=buildCard(p);n.dataset.key=key;n.dataset.sig=sig;
+    if(focus){const ta=n.querySelector("textarea[data-cin]");if(ta){ta.focus();try{ta.setSelectionRange(focus.s,focus.e)}catch(e){}}}
+    return n;
+  });
+  let ref=box.firstElementChild;
+  nodes.forEach(n=>{if(n===ref)ref=ref.nextElementSibling;else box.insertBefore(n,ref)});
+  while(ref){const nx=ref.nextElementSibling;ref.remove();ref=nx}
+  const none=!S.list.length;
+  $("empty").hidden=!none;box.hidden=none;
+  const nmEl=$("nomatch");nmEl.hidden=none||!!list.length;
+  if(!nmEl.hidden)nmEl.textContent=filt.who==="others"&&!filt.q.trim()&&filt.cat==="All"?"No posts from other business owners yet. Share the link with other owners so they can post, react and comment.":"No posts match your filters.";
+  if(none&&!$("exampleSlot").firstChild)$("exampleSlot").append(buildCard(EXAMPLE,{example:true}));
+  $("feedHint").textContent=none?"":(list.length===S.list.length?S.list.length+" listed":list.length+" of "+S.list.length+" shown");
+}
+const EX_LOGO='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><rect width="400" height="400" rx="80" fill="#2563eb"/><circle cx="200" cy="215" r="92" fill="#fbbf24"/><rect x="60" y="215" width="280" height="130" fill="#2563eb"/><rect x="90" y="250" width="220" height="20" rx="10" fill="#c4b5fd"/><rect x="120" y="290" width="160" height="20" rx="10" fill="#c4b5fd"/></svg>';
+const EXAMPLE={id:"ex",uid:"ex",name:"Sunrise Bakehouse",category:"Food & drink",location:"Your neighbourhood",tagline:"Fresh bread before the street wakes up.",desc:"Small-batch loaves, seeded rolls and weekend pastries, baked each morning in a corner shop. Order ahead for office breakfasts or drop in for something warm.",contact:"",logo:{k:"svg",d:EX_LOGO},picCount:0,ts:0,ed:0};
+
+/* ---------- owner profile ---------- */
+const PV={uid:null,form:null};
+function profPosts(){return S.list.filter(p=>p.uid===PV.uid).sort((a,b)=>b.ts-a.ts)}
+function openProfile(uid){PV.uid=uid;PV.form=null;showView("prof");refreshProfile();buildProfContact()}
+function refreshProfile(){
+  const posts=profPosts(),head=$("prof-head");head.innerHTML="";
+  const top=el("div","row"),av=el("img","gav");av.alt="";av.dataset.uid=PV.uid;av.src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";av.style.margin="0";
+  const nm=el("h2","","Someone");nm.dataset.uid=PV.uid;
+  const tt=el("div");tt.append(nm);
+  const pf=PROF[PV.uid]||{};
+  if(pf.biz)tt.append(el("p","hint",pf.biz));if(pf.bio)tt.append(el("p","",pf.bio));
+  top.append(av,tt);head.append(top);
+  const reacts=posts.reduce((a,p)=>a+total(p.id),0),all=posts.flatMap(p=>S.rv[p.id]||[]);
+  const since=posts.length?new Date(Math.min(...posts.map(p=>p.ts||Date.now()))).toLocaleDateString([],{year:"numeric",month:"short"}):"";
+  const facts=[posts.length+" post"+(posts.length===1?"":"s"),reacts+" reaction"+(reacts===1?"":"s"),all.length?"★ "+(all.reduce((a,x)=>a+x.s,0)/all.length).toFixed(1)+" from "+all.length+" review"+(all.length===1?"":"s"):"No reviews yet"];
+  if(since)facts.push("Posting since "+since);
+  const f=el("div","chips");f.style.marginTop="12px";facts.forEach(x=>f.append(el("span","cat",x)));head.append(f);
+  const hrs=posts.filter(p=>p.ct&&p.ct.hours);
+  if(hrs.length){head.append(el("h4","mini","Opening hours"));const ul=el("ul","tips");hrs.forEach(p=>ul.append(el("li","",(hrs.length>1?p.name+": ":"")+p.ct.hours)));head.append(ul)}
+  $("prof-count").textContent=posts.length?"":"";
+  const box=$("prof-posts");
+  if(!posts.length){box.innerHTML="";const e=el("div","card");e.append(el("p","","This owner has no posts yet."));box.append(e);fillNames();return}
+  const old=new Map();box.querySelectorAll(":scope>.biz").forEach(n=>old.set(n.dataset.key,n));
+  const nodes=posts.map(p=>{const key=p.uid+":"+p.id,sig=sigOf(p),prev=old.get(key);if(prev&&prev.dataset.sig===sig)return prev;const n=buildCard(p);n.dataset.key=key;n.dataset.sig=sig;return n});
+  box.innerHTML="";nodes.forEach(n=>box.append(n));
+  fillNames();
+}
+function buildProfContact(){
+  const box=$("prof-contact");box.innerHTML="";const posts=profPosts();
+  box.append(el("h3","","Contact this owner"));
+  if(PV.uid===me.id){box.append(el("p","hint","This is your profile. Other owners can contact you here."));return}
+  if(!posts.length){box.append(el("p","hint","This owner has not posted a business yet."));return}
+  box.append(el("p","hint","Your message is sent through the owner's own WhatsApp or email, so it stays between you and them."));
+  const mk=(label,input)=>{const l=el("label","fld");l.append(el("span","",label),input);return l};
+  const sel=el("select");posts.forEach(p=>{const o=el("option","",p.name);o.value=p.id;sel.append(o)});
+  if(posts.length>1)box.append(mk("About which business",sel));
+  const nm=el("input");nm.type="text";nm.maxLength=60;nm.autocomplete="off";box.append(mk("Your name",nm));
+  const msg=el("textarea");msg.maxLength=500;msg.style.minHeight="90px";msg.placeholder="Hi, I would like to know more about…";box.append(mk("Your message",msg));
+  const info=el("div","cbox"),acts=el("div","cacts");box.append(info,acts);
+  const cur=()=>posts.find(p=>p.id===sel.value)||posts[0];
+  const text=()=>"Hi "+cur().name+", this is "+nm.value.trim()+". "+msg.value.trim()+" (sent from Business Studio)";
+  const valid=()=>nm.value.trim().length>=2&&msg.value.trim().length>=5;
+  const guard=e=>{if(!valid()){e.preventDefault();toast("Add your name and a message first",true)}};
+  const draw=()=>{
+    info.innerHTML="";acts.innerHTML="";const p=cur(),pc=p.ct||{};
+    if(pc.phone)info.append(el("p","cline","Phone: "+pc.phone));
+    if(pc.email)info.append(el("p","cline","Email: "+pc.email));
+    if(pc.wa&&/^\+?[\d\s().-]{6,30}$/.test(pc.wa)){const n=toIntl(pc.wa,p.country);if(n.length>=7&&n.length<=15){const a=el("a","cbtn wa","Send on WhatsApp");a.href="https://wa.me/"+n+"?text="+encodeURIComponent(text());a.target="_blank";a.rel="noopener nofollow ugc";a.onclick=guard;acts.append(a)}}
+    if(pc.email&&EMAIL_RE.test(pc.email)){const a=el("a","cbtn","Send by email");a.href="mailto:"+encodeURIComponent(pc.email).replace(/%40/g,"@")+"?subject="+encodeURIComponent("Enquiry about "+p.name)+"&body="+encodeURIComponent(text());a.onclick=guard;acts.append(a)}
+    const cp=el("button","bub","Copy message");cp.type="button";cp.onclick=async()=>{if(!valid()){toast("Add your name and a message first",true);return}try{await navigator.clipboard.writeText(text());toast("Message copied")}catch(e){toast("Copy was blocked here",true)}};acts.append(cp);
+    if(!acts.querySelector("a"))info.append(el("p","hint","This business has not added WhatsApp or email. Use the contact buttons on its post, or copy your message."));
+  };
+  [nm,msg].forEach(i=>i.addEventListener("input",draw));sel.onchange=draw;draw();
+}
+$("prof-back").onclick=()=>showView("feed");
+
+/* ---------- actions ---------- */
+async function react(pid,type){
+  if(!canPost())return;
+  try{await mutate("reactions",d=>{if(d[pid]===type)delete d[pid];else d[pid]=type;return d})}catch(e){toast(errMsg(e),true)}
+}
+async function saveReview(p,st,text){
+  try{await mutate("reviews",d=>{d[p.id]={s:st,t:text.slice(0,300),ts:Date.now()};return d});delete ui.rvd[p.uid+":"+p.id];toast("Review posted")}catch(e){toast(errMsg(e),true)}
+}
+async function delReview(p){
+  try{await mutate("reviews",d=>{delete d[p.id];return d});delete ui.rvd[p.uid+":"+p.id];toast("Review removed")}catch(e){toast(errMsg(e),true)}
+}
+function fillReviews(panel,p,key){
+  panel.append(el("h4","mini","Star ratings and reviews"));
+  const l=S.rv[p.id]||[],r=ratingOf(p.id);
+  if(l.length){const sm=el("p","");sm.append(el("b","stars",starStr(Math.round(r.avg))),document.createTextNode(" "+r.avg.toFixed(1)+" out of 5 from "+r.n+" review"+(r.n===1?"":"s")));panel.append(sm)}
+  else panel.append(el("p","hint","No reviews yet. Be the first to rate this business."));
+  const shown=ui.rvall[key]?l:l.slice(0,3);
+  shown.forEach(x=>{
+    const row=el("div","cm"),av=el("img");av.alt="";av.dataset.uid=x.uid;av.src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
+    const bd=el("div","bd"),nm=el("div","nm"),n=el("span","","Someone");n.dataset.uid=x.uid;nm.append(n," ",el("span","stars",starStr(x.s))," ",el("span","tm",ago(x.ts)));
+    bd.append(nm);if(x.t)bd.append(el("div","tx",x.t));
+    if(x.uid===me.id){const rm=el("button","x","Remove my review");rm.type="button";rm.onclick=()=>delReview(p);bd.append(rm)}
+    row.append(av,bd);panel.append(row);
+  });
+  if(l.length>3&&!ui.rvall[key]){const va=el("button","more","View all "+l.length+" reviews");va.type="button";va.onclick=()=>{ui.rvall[key]=true;renderFeed()};panel.append(va)}
+  if(!canPost()){panel.append(el("p","hint",me.id?"View-only access: you can read reviews but not write them.":"Log in to rate this business."));return}
+  if(p.uid===me.id){panel.append(el("p","hint","You cannot review your own business."));return}
+  const mine=l.find(x=>x.uid===me.id),dr=ui.rvd[key]||(ui.rvd[key]={s:mine?mine.s:0,t:mine?mine.t:""});
+  const form=el("div","rvform");form.append(el("p","hint",mine?"Update your rating":"Your rating"));
+  const pick=el("div","spick");pick.setAttribute("role","group");pick.setAttribute("aria-label","Choose a rating from 1 to 5 stars");
+  const btns=[];
+  const paint=()=>btns.forEach((b,i)=>{const on=i<dr.s;b.textContent=on?"★":"☆";b.classList.toggle("on",on);b.setAttribute("aria-pressed",dr.s===i+1?"true":"false")});
+  for(let i=1;i<=5;i++){const b=el("button","");b.type="button";b.setAttribute("aria-label",i+" star"+(i===1?"":"s"));b.onclick=()=>{dr.s=i;paint()};btns.push(b);pick.append(b)}
+  paint();form.append(pick);
+  const ta=el("textarea");ta.maxLength=300;ta.placeholder="Tell others about your experience (optional)";ta.setAttribute("aria-label","Write a review of "+p.name);ta.value=dr.t;ta.oninput=()=>{dr.t=ta.value};
+  const go=el("button","bub on",mine?"Update my review":"Post review");go.type="button";
+  go.onclick=()=>{if(dr.s<1){toast("Choose 1 to 5 stars first",true);return}saveReview(p,dr.s,ta.value.trim())};
+  form.append(ta);const act=el("div","row mt");act.append(go);form.append(act);panel.append(form);
+}
+async function addComment(p,text,ta){
+  try{await mutate("comments",d=>{d[rid()]={p:p.id,t:text.slice(0,500),ts:Date.now()};return d});ui.draft[p.uid+":"+p.id]="";if(ta)ta.value=""}catch(e){toast(errMsg(e),true)}
+}
+async function delComment(c){
+  try{
+    if(c.uid===me.id)await mutate("comments",d=>{delete d[c.id];return d});
+    else{const ref=db.doc("comments/"+c.uid),s=await ref.get(),d=clone(s.data()||{});if(d.c)delete d.c[c.id];await ref.set(d);toast("Comment removed")}
+  }catch(e){toast(errMsg(e),true)}
+}
+async function delPost(p){
+  try{await mutate("posts",d=>{delete d[p.id];return d});db.doc("pics/"+me.id+"/p/"+p.id).delete().catch(()=>{});toast("Deleted")}catch(e){toast(errMsg(e),true)}
+}
+async function removeOther(p){
+  try{const ref=db.doc("posts/"+p.uid),s=await ref.get(),d=clone(s.data()||{});if(d.items)delete d.items[p.id];await ref.set(d);db.doc("pics/"+p.uid+"/p/"+p.id).delete().catch(()=>{});toast("Removed")}catch(e){toast(errMsg(e),true)}
+}
+
+/* ---------- composer ---------- */
+function fillForm(){
+  $("f-name").value=D.name;$("f-cat").value=D.category;$("f-country").value=D.country;$("f-region").value=D.region;$("f-city").value=D.city;$("f-addr").value=D.addr;
+  $("f-phone").value=D.phone;$("f-wa").value=D.wa;$("f-email").value=D.email;$("f-web").value=D.web;$("f-hours").value=D.hours;
+  $("f-facts").value=D.facts;$("f-desc").value=D.desc;$("f-tag").value=D.tagline;syncCountry();
+  $("postTitle").textContent=D.id?"Edit your business":"Post your business";$("publish").textContent=D.id?"Save changes":"Post";$("cancelEdit").hidden=!D.id;
+  renderPedit();renderLogoPrev();descCount();preview();
+}
+function readForm(){D.name=$("f-name").value;D.category=$("f-cat").value;D.country=$("f-country").value;D.region=$("f-region").value;D.city=$("f-city").value;D.addr=$("f-addr").value;D.phone=$("f-phone").value;D.wa=$("f-wa").value;D.email=$("f-email").value;D.web=$("f-web").value;D.hours=$("f-hours").value;D.facts=$("f-facts").value;D.desc=$("f-desc").value;D.tagline=$("f-tag").value}
+function descCount(){const n=$("f-desc").value.trim().length;$("descCount").textContent=n?n+" / 1200":""}
+let pvT=0,dsT=0;
+function preview(){
+  clearTimeout(pvT);pvT=setTimeout(()=>{const box=$("pv");box.innerHTML="";const p={name:D.name.trim(),category:D.category,country:D.country,location:locText(D),addr:D.addr.trim(),ct:{phone:D.phone.trim(),wa:D.wa.trim(),email:D.email.trim(),web:D.web.trim(),hours:D.hours.trim()},tagline:D.tagline.trim(),desc:D.desc.trim(),logo:D.logo};box.append(buildCard(p,{preview:true,imgs:D.imgs}))},60);
+  clearTimeout(dsT);dsT=setTimeout(saveDraft,500);
+}
+function saveDraft(){
+  try{const full=JSON.stringify(D);try{localStorage.setItem("ms_biz_draft",full)}catch(e){const d=clone(D);d.imgs=[];localStorage.setItem("ms_biz_draft",JSON.stringify(d))}}catch(e){}
+}
+function loadDraft(){try{const r=JSON.parse(localStorage.getItem("ms_biz_draft")||"null");if(r&&typeof r==="object"){D=Object.assign(blankDraft(),r);D.imgs=Array.isArray(D.imgs)?D.imgs.filter(i=>i&&imgSrc(i)).slice(0,MAX_PICS):[];if(D.logo&&!logoSrc(D.logo))D.logo=null;if(!CATS.includes(D.category))D.category=CATS[0];if(D.country!=="Online"&&!CODE.hasOwnProperty(D.country))D.country="";D.id=null}}catch(e){}}
+function renderLogoPrev(){const p=$("logoPrev");p.innerHTML="";const src=logoSrc(D.logo);if(src){const i=el("img");i.alt="Your logo";i.src=src;p.append(i)}else p.textContent=(D.name||"?").trim().charAt(0).toUpperCase()||"?";$("rmLogo").hidden=!D.logo}
+function renderPedit(){
+  const box=$("pedit");box.innerHTML="";
+  D.imgs.forEach((im,k)=>{const w=el("div","pe"),i=el("img");i.alt="Picture "+(k+1);i.src=imgSrc(im)||"";const x=el("button","","×");x.type="button";x.setAttribute("aria-label","Remove picture "+(k+1));x.onclick=()=>{D.imgs.splice(k,1);renderPedit();preview()};w.append(i,x);box.append(w)});
+  const full=D.imgs.length>=MAX_PICS;$("upPhoto").disabled=full;$("aiPic").disabled=full;
+}
+function startEdit(p){
+  const pc=p.ct||{};let phone=pc.phone||"",wa=pc.wa||"",email=pc.email||"",web=pc.web||"";
+  if(!Object.keys(pc).length){const l=p.contact||"";if(/^https?:\/\//i.test(l))web=l;else if(l.indexOf("@")>0)email=l;else if(l)phone=l}
+  D={id:p.id,name:p.name,category:p.category,country:p.country||"",region:p.region||"",city:p.city||(p.country?"":p.location),addr:p.addr||"",phone,wa,email,web,hours:pc.hours||"",facts:"",tagline:p.tagline,desc:p.desc,logo:p.logo?clone(p.logo):null,imgs:[]};
+  showView("post");fillForm();
+  if(p.picCount&&db)picsFor(p).then(a=>{if(D.id===p.id){D.imgs=a.filter(i=>imgSrc(i)).map(i=>({k:i.k,d:i.d,c:i.c}));renderPedit();preview()}});
+}
+async function publish(){
+  if(!canPost()){toast("You need Contributor access to post. Ask the owner of this page.",true);return}
+  readForm();
+  if(!D.name.trim()){toast("Add your business name",true);$("f-name").focus();return}
+  if(D.desc.trim().length<20){toast("Write a short description, at least a sentence",true);$("f-desc").focus();return}
+  if(!D.country){toast("Choose your country, or pick Online only",true);$("f-country").focus();return}
+  if(D.country!=="Online"&&!D.city.trim()){toast("Add your city or town",true);$("f-city").focus();return}
+  const cc=cleanContacts();
+  if(cc.err){toast(cc.err[0],true);$(cc.err[1]).focus();return}
+  if(!cc.any){toast("Add at least one way to contact you: phone, WhatsApp, email or website",true);$("f-phone").focus();return}
+  const editing=D.id,old=editing?OWN.posts.d[editing]:null;
+  if(!editing&&Object.keys(OWN.posts.d).length>=MAX_POSTS){toast("You have reached the limit of "+MAX_POSTS+" posts. You can still edit them.",true);return}
+  const id=editing||rid(),now=Date.now();
+  const item={name:D.name.trim().slice(0,80),category:D.category,location:locText(D),country:D.country,region:D.region.trim().slice(0,60),city:D.city.trim().slice(0,60),addr:D.addr.trim().slice(0,100),ct:cc.ct,tagline:D.tagline.trim().slice(0,120),desc:D.desc.trim().slice(0,1200),pics:D.imgs.length,ts:old&&old.ts?old.ts:now};
+  if(old)item.ed=now;if(D.logo)item.logo=D.logo;
+  const imgs=D.imgs.map(i=>({k:i.k,d:i.d,c:(i.c||"").slice(0,80)}));
+  if(JSON.stringify(imgs).length>235000){toast(errMsg({code:"too_big"}),true);return}
+  const btn=$("publish");btn.disabled=true;btn.textContent="Posting…";
+  try{
+    if(imgs.length||(old&&old.pics))await db.doc("pics/"+me.id+"/p/"+id).set({imgs,ts:now});
+    await mutate("posts",d=>{d[id]=item;return d});
+    picsCache.delete(me.id+"/"+id+"/"+item.ts+"/"+(item.ed||0));
+    toast(editing?"Saved":"Posted");
+    D=blankDraft();try{localStorage.removeItem("ms_biz_draft")}catch(e){}
+    fillForm();showView("feed");
+  }catch(e){toast(errMsg(e),true)}
+  finally{btn.disabled=false;btn.textContent=D.id?"Save changes":"Post"}
+}
+
+/* ---------- AI ---------- */
+let offNote=false;
+const LSYM=[
+ ["Rising sun",(a,b,d,w)=>'<circle r="50" fill="'+b+'"/>'+[0,1,2,3,4,5,6,7].map(i=>{const t=i*Math.PI/4,c=Math.cos(t),s=Math.sin(t);return '<line x1="'+(c*66).toFixed(1)+'" y1="'+(s*66).toFixed(1)+'" x2="'+(c*92).toFixed(1)+'" y2="'+(s*92).toFixed(1)+'" stroke="'+a+'" stroke-width="'+w*3+'" stroke-linecap="round"/>'}).join("")],
+ ["Leaf pair",(a,b,d,w)=>'<path d="M0 85C-72 45-72-52 0-92C72-52 72 45 0 85Z" fill="'+a+'"/><path d="M0 70V-60" stroke="#fff" stroke-width="'+w*2+'" stroke-linecap="round"/><path d="M0 20C30 10 48-10 52-34" stroke="#fff" stroke-width="'+w*1.4+'" fill="none" stroke-linecap="round"/><circle cx="48" cy="62" r="16" fill="'+b+'"/>'],
+ ["Little shop",(a,b,d,w)=>'<rect x="-70" y="-8" width="140" height="82" rx="6" fill="'+a+'"/><path d="M-88-8L0-72L88-8Z" fill="'+b+'"/><rect x="-15" y="22" width="30" height="52" rx="4" fill="#fff"/>'],
+ ["Hexagon",(a,b)=>'<polygon points="0,-92 80,-46 80,46 0,92 -80,46 -80,-46" fill="'+a+'"/><polygon points="0,-54 47,-27 47,27 0,54 -47,27 -47,-27" fill="'+b+'"/>'],
+ ["Water drop",(a,b)=>'<path d="M0-92C62-12 72 30 0 84C-72 30-62-12 0-92Z" fill="'+a+'"/><circle cx="-22" cy="22" r="14" fill="#fff" opacity=".55"/><circle cx="30" cy="60" r="10" fill="'+b+'"/>'],
+ ["Mountain peak",(a,b)=>'<polygon points="-96,72 -28,-54 18,18 44,-20 96,72" fill="'+a+'"/><polygon points="-28,-54 -6,-14 -28,-24 -50,-14" fill="#fff"/><circle cx="62" cy="-52" r="18" fill="'+b+'"/>'],
+ ["Two circles",(a,b)=>'<circle cx="-32" r="60" fill="'+a+'" opacity=".92"/><circle cx="32" r="60" fill="'+b+'" opacity=".85"/>'],
+ ["Star",(a,b)=>{const pts=[];for(let i=0;i<10;i++){const r=i%2?38:92,t=-Math.PI/2+i*Math.PI/5;pts.push((Math.cos(t)*r).toFixed(1)+","+(Math.sin(t)*r).toFixed(1))}return '<polygon points="'+pts.join(" ")+'" fill="'+a+'"/><circle r="20" fill="'+b+'"/>'}],
+ ["Heart",(a,b)=>'<path d="M0 78C-104 4-66-72 0-30C66-72 104 4 0 78Z" fill="'+a+'"/><circle cx="-34" cy="-26" r="12" fill="#fff" opacity=".5"/>'],
+ ["Rising bars",(a,b)=>'<rect x="-76" y="8" width="40" height="64" rx="6" fill="'+a+'"/><rect x="-20" y="-24" width="40" height="96" rx="6" fill="'+b+'"/><rect x="36" y="-62" width="40" height="134" rx="6" fill="'+a+'"/>']
+];
+const LPAL={warm:["#e8590c","#f59f00","#2b2118"],cool:["#1c7ed6","#0ca678","#12263f"],earth:["#6b7a3a","#b5651d","#3b2f20"],mono:["#2563eb","#93c5fd","#0f1b3a"],vivid:["#e11d48","#7c3aed","#111827"]};
+const LCOLS={red:"#dc2626",blue:"#2563eb",green:"#16a34a",orange:"#ea580c",purple:"#7c3aed",violet:"#7c3aed",yellow:"#eab308",pink:"#db2777",teal:"#0d9488",black:"#111827",brown:"#92400e",gold:"#d4a017"};
+function lkey(t){t=String(t).toLowerCase();if(/bak|bread|cake|food|cafe|coffee|restaurant|kitchen|catering|pastr/.test(t))return 0;if(/garden|plant|farm|organic|nature|green|tree|flower|herb|leaf/.test(t))return 1;if(/shop|store|retail|market|boutique|home|house|build|repair|property|real estate/.test(t))return 2;if(/tech|digital|software|computer|data|phone|code|web/.test(t))return 3;if(/clean|water|laundry|wash|drink|car wash|spa/.test(t))return 4;if(/fit|gym|sport|outdoor|travel|hike|adventure|tour/.test(t))return 5;if(/communit|people|friend|family|network|social|event/.test(t))return 6;if(/hair|beauty|salon|nail|makeup|fashion|star|kids|toy/.test(t))return 7;if(/care|health|nurse|love|charity|wedding|gift/.test(t))return 8;if(/finance|account|consult|business|grow|training|school|tutor/.test(t))return 9;return -1}
+function lesc(t){return String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+function lbuild(p){
+  const a=p.c[0],b=p.c[1],d=p.c[2],w=p.bold?5:3,fam=p.serif?"Georgia, 'Times New Roman', serif":"'Trebuchet MS', Arial, sans-serif",fw=p.bold?800:700;
+  const sym=(LSYM[p.sym]||LSYM[0])[1],ic=(p.round>1?'<circle r="106" fill="'+a+'" opacity=".14"/>':'')+(p.simple?sym(a,a,d,w):sym(a,b,d,w));
+  const nm=lesc(p.name),L=Math.max(1,p.name.length);
+  const fit=(mx,wd)=>Math.max(20,Math.min(mx*p.nameS,wd/(L*(p.serif?0.52:0.58))));
+  const txt=(y,size,fill,extra)=>'<text x="200" y="'+y+'" text-anchor="middle" font-family="'+fam+'" font-weight="'+fw+'" font-size="'+size.toFixed(0)+'" fill="'+fill+'"'+(extra||"")+'>'+nm+'</text>';
+  const rx=p.round?28:6;let body="";
+  switch(p.style){
+   case "Icon only":body='<g transform="translate(200 200) scale('+(1.5*p.iconS*0.85).toFixed(2)+')">'+ic+'</g>';break;
+   case "Name only (wordmark)":body=txt(205,fit(78,340),a)+'<rect x="'+(200-70*p.nameS)+'" y="228" width="'+140*p.nameS+'" height="'+(p.bold?12:8)+'" rx="'+(p.round?6:1)+'" fill="'+b+'"/>';break;
+   case "Monogram":{const ini=lesc(p.name.split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join("").toUpperCase()||"?");
+    body='<'+(p.round?'circle cx="200" cy="165" r="'+(105*p.iconS).toFixed(0)+'"':'rect x="'+(200-105*p.iconS).toFixed(0)+'" y="'+(165-105*p.iconS).toFixed(0)+'" width="'+(210*p.iconS).toFixed(0)+'" height="'+(210*p.iconS).toFixed(0)+'" rx="'+rx+'"')+' fill="'+a+'"/><text x="200" y="'+(165+0.35*110*p.iconS).toFixed(0)+'" text-anchor="middle" font-family="'+fam+'" font-weight="800" font-size="'+(110*p.iconS).toFixed(0)+'" fill="#fff">'+ini+'</text>'+txt(352,fit(44,340),d);break}
+   case "Badge or emblem":
+    body='<circle cx="200" cy="200" r="186" fill="#fff" stroke="'+a+'" stroke-width="'+(w+4)+'"/><circle cx="200" cy="200" r="168" fill="none" stroke="'+b+'" stroke-width="3"/><g transform="translate(200 142) scale('+(0.72*p.iconS).toFixed(2)+')">'+ic+'</g><rect x="62" y="268" width="276" height="62" rx="'+(p.round?31:8)+'" fill="'+a+'"/>'+txt(309,Math.min(38*p.nameS,262/(L*0.6)),"#fff");break;
+   default:body='<g transform="translate(200 148) scale('+(0.88*p.iconS).toFixed(2)+')">'+ic+'</g>'+txt(335,fit(60,340),d);
+  }
+  const title=((LSYM[p.sym]||LSYM[0])[0]+(p.style==="Monogram"?" monogram":p.style==="Badge or emblem"?" badge":"")).slice(0,60);
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" data-p="'+encodeURIComponent(JSON.stringify(p))+'"><title>'+lesc(title)+'</title>'+body+'</svg>';
+}
+function lpalette(excl){
+  const pal=$("l-pal").value;
+  if(pal==="custom")return [$("l-c1").value,$("l-c2").value,"#111827"];
+  const keys=Object.keys(LPAL),k=LPAL[pal]?pal:keys[Math.floor(Math.random()*keys.length)];
+  if(excl){const o=keys.filter(x=>JSON.stringify(LPAL[x])!==JSON.stringify(excl));return LPAL[o[Math.floor(Math.random()*o.length)]]}
+  return LPAL[k];
+}
+function localLogoNew(){
+  const b=logoBrief(),seen=LG.map(x=>ideaOf(x.svg)),used=new Set(LSYM.map((x,i)=>seen.some(t=>t.indexOf(x[0])===0)?i:-1));
+  const want=lkey(($("l-idea").value||"")+" "+b.what+" "+b.name),order=LSYM.map((_,i)=>i).filter(i=>!used.has(i));
+  const sym=(want>=0&&!used.has(want)&&Math.random()<0.8)?want:(order.length?order[Math.floor(Math.random()*order.length)]:Math.floor(Math.random()*LSYM.length));
+  const p={name:b.name||"My business",style:b.style||"Icon with the name",sym,c:lpalette(),round:/Friendly|Playful|Natural/.test(vibe)?1:0,bold:/Bold|Playful/.test(vibe)?1:0,serif:/Elegant|Natural/.test(vibe)?1:0,simple:/Minimal|Modern/.test(vibe)?1:0,iconS:1,nameS:1};
+  return lbuild(p);
+}
+function localLogoEdit(raw){
+  const m=raw.match(/data-p="([^"]+)"/);let p;try{p=JSON.parse(decodeURIComponent(m[1]))}catch(e){p=null}
+  if(!p)return localLogoNew();
+  const f=((raw.match(/Change it as requested: ([\s\S]*?)\. Keep everything else/)||[])[1]||"").toLowerCase();
+  let hit=false;const ok=()=>{hit=true};
+  if(/simpl|fewer|minimal|clean/.test(f)){p.simple=1;ok()}
+  if(/bold|thick|strong/.test(f)){p.bold=1;p.simple=0;ok()}
+  if(/round|soft/.test(f)){p.round=p.round?Math.min(2,p.round+1):1;ok()}
+  if(/serif|elegant|classic/.test(f)){p.serif=1;ok()}
+  if(/sans|modern/.test(f)){p.serif=0;ok()}
+  if(/(bigger|larger|increase).*(icon|symbol|logo)|icon.*(bigger|larger)/.test(f)){p.iconS=Math.min(1.5,p.iconS*1.25);ok()}
+  if(/(smaller|reduce).*(icon|symbol)/.test(f)){p.iconS=Math.max(0.6,p.iconS*0.8);ok()}
+  if(/(bigger|larger|increase).*(name|text|word|letter)|(name|text).*(bigger|larger)/.test(f)){p.nameS=Math.min(1.5,p.nameS*1.25);ok()}
+  if(/(smaller|reduce).*(name|text)/.test(f)){p.nameS=Math.max(0.6,p.nameS*0.8);ok()}
+  const cm=Object.keys(LCOLS).find(k=>new RegExp("\\b"+k+"\\b").test(f));
+  if(cm){p.c=[LCOLS[cm],p.c[1],p.c[2]];ok()}
+  else if(/colou?r|palette|bright|warm|cool|earth/.test(f)){p.c=lpalette(p.c);ok()}
+  const sk=lkey(f);if(sk>=0&&/add|use|change|swap|replace|with|symbol|icon|draw/.test(f)){p.sym=sk;ok()}
+  const sm={sun:0,leaf:1,tree:1,shop:2,house:2,hexagon:3,drop:4,water:4,mountain:5,circles:6,star:7,heart:8,bars:9};
+  const sw=Object.keys(sm).find(k=>new RegExp("\\b"+k).test(f));if(sw!==undefined){p.sym=sm[sw];ok()}
+  if(/badge|emblem/.test(f)){p.style="Badge or emblem";ok()}
+  if(/monogram|initial/.test(f)){p.style="Monogram";ok()}
+  if(/wordmark|name only|text only/.test(f)){p.style="Name only (wordmark)";ok()}
+  if(/icon only|no text|without (the )?name/.test(f)){p.style="Icon only";ok()}
+  if(!hit){p.sym=(p.sym+1)%LSYM.length;p.c=lpalette(p.c)}
+  return lbuild(p);
+}
+function localAsk(prompt){
+  const raw=Array.isArray(prompt)?String(prompt[prompt.length-1].content):String(prompt);
+  if(/^You are an expert SVG illustrator/.test(raw))throw {code:"noai"};
+  if(/^You are a professional logo designer\. Design ONE/.test(raw))return localLogoNew();
+  if(/^You are a professional logo designer\. Here is a logo as SVG/.test(raw))return localLogoEdit(raw);
+  readForm();
+  const nm=D.name.trim()||"your business",what=D.facts.trim()||D.category.toLowerCase(),place=locText(D),inP=place?" in "+place:"";
+  const pick=a=>a[Math.floor(Math.random()*a.length)];
+  const cap=t=>t.charAt(0).toUpperCase()+t.slice(1);
+  if(/^Write a short description for a small business post/.test(raw))
+    return nm+" is a local "+what+" business"+inP+". We focus on friendly service, good quality and fair value, so every customer leaves happy. Come and see what we offer, or get in touch with any questions. We would love to welcome you.";
+  if(/^Suggest 5 short, distinct taglines/.test(raw))
+    return JSON.stringify([cap(what)+", made with care.","Local. Friendly. Yours.",nm+": it's your time to shine.","Quality you can count on.","Your neighbourhood's favourite."]);
+  if(/^Here is an answer an AI assistant gave/.test(raw))return JSON.stringify(["Make that shorter and friendlier.","Rewrite it for Instagram with three hashtags.","Give me three more options in a different tone."]);
+  if(/^Suggest 6 ready-to-use prompts/.test(raw))
+    return JSON.stringify(["I own "+nm+", a "+what+" business"+inP+". Give me 8 business name or tagline ideas as a numbered list.","Write a friendly 80-word description of "+nm+" for a community board, ending with a call to action.","Write 3 social media posts for "+nm+" announcing our opening, each under 60 words with 3 hashtags.","Write a polite reply from "+nm+" to a customer asking about prices. Use [brackets] for details I must add.","Give me 5 logo ideas for "+nm+" with the symbol and colours for each.","Give me 6 practical ways to make my "+nm+" listing stand out."]);
+  if(/^Suggest 5 distinct logo concepts/.test(raw))
+    return JSON.stringify(["A simple "+what.split(" ")[0]+" symbol inside a circle, deep blue and warm yellow.","The first letter of "+nm+" in a bold rounded shape, purple and white.","A rising sun behind a small shop outline, orange and cream.","Two overlapping shapes that suggest community, blue and violet.","A clean badge with the business name and one leaf, green and white."]);
+  if(/^Rewrite the rough prompt below/.test(raw)){
+    const r=raw.split("ROUGH PROMPT:")[1]||"";const t=r.trim().replace(/\s+/g," ");
+    return "Act as a helpful marketing assistant for a small business. "+cap(t)+(/[.?!]$/.test(t)?"":".")+" The business is "+nm+", a "+what+" business"+inP+". The audience is local customers. Use a friendly, professional tone, keep it under 120 words, and format the answer as a short numbered list. Do not invent prices or facts.";
+  }
+  if(/^Write one detailed logo design prompt/.test(raw)){const b=logoBrief();return "Design a clean, memorable logo for "+(b.name||nm)+", "+(b.what||what)+". Use one simple central symbol, rounded shapes and a flat style, with two or three colours. Add the business name in a friendly, easy-to-read typeface, with plenty of space around it. Avoid thin lines, gradients and small details."}
+  let u=raw;
+  if(Array.isArray(prompt)){const head=AI_SYS+aiCtx()+"\n\n";u=raw.startsWith(head.slice(0,60))&&raw.length>head.length?raw.slice(head.length):raw.replace(AI_SYS,"").replace(/^[\s\S]*Description so far:[^\n]*\n\n/,"").trim()}
+  const l=u.toLowerCase();
+  if(/\bname|taglin|slogan/.test(l)&&/\bname/.test(l))return "Here are 8 name ideas for a "+what+" business:\n1. "+cap(what.split(" ")[0])+" & Co\n2. The Local "+cap(what.split(" ")[0])+"\n3. Bright Corner "+cap(what.split(" ")[0])+"\n4. "+(D.city.trim()||"Home")+" "+cap(what.split(" ")[0])+" House\n5. Fresh Start "+cap(what.split(" ")[0])+"\n6. Daily "+cap(what.split(" ")[0])+"\n7. Good Hands "+cap(what.split(" ")[0])+"\n8. Sunrise "+cap(what.split(" ")[0])+"\n\nCheck that the name is not already used in your area.";
+  if(/taglin|slogan/.test(l))return "Tagline ideas:\n1. "+cap(what)+", made with care.\n2. Local. Friendly. Yours.\n3. Quality you can count on.\n4. It's your time to shine.\n5. Your neighbourhood's favourite.";
+  if(/logo/.test(l))return "Five logo ideas for "+nm+":\n1. A simple symbol of your product in a circle, blue and yellow.\n2. Your first letter in a bold rounded shape.\n3. A sun rising behind a shop outline.\n4. Two overlapping circles for community.\n5. A clean badge with your name and one leaf.\n\nOpen the Logo maker to design one of these.";
+  if(/reply|customer|complain|enquir|inquir|price/.test(l))return "Hi [customer name],\n\nThank you for contacting "+nm+". I'm happy to help. [Answer the question here, including any prices or hours you can confirm.]\n\nIf you'd like, I can [next step, such as reserve an item or book a time]. Please let me know.\n\nKind regards,\n"+nm;
+  if(/post|social|instagram|facebook|tiktok|announce|caption/.test(l))return "Post 1:\nWe're "+nm+", your local "+what+" business"+inP+". Come and say hello, we'd love to meet you! #SmallBusiness #ShopLocal\n\nPost 2:\nWhat would you like to see from us this week? Tell us in the comments. #"+nm.replace(/[^A-Za-z0-9]/g,"")+" #Community\n\nPost 3:\nThank you to everyone who has supported us so far. It's your time to shine too, so tag a small business you love. #SupportLocal";
+  if(/descri|about us|about my|bio|write.*(listing|post)/.test(l))return nm+" is a local "+what+" business"+inP+". We care about friendly service, quality and fair value, so every customer leaves happy. Visit us, call us, or send a message and we'll be glad to help.";
+  if(/improve|stand out|better|tips|advice|listing|grow|more customers/.test(l))return "Ways to make your listing stand out:\n1. Add a clear logo and two or three real photos.\n2. Start the description with what you sell and who it is for.\n3. Add every contact method: phone, WhatsApp, email and website.\n4. Add your opening hours.\n5. Reply to comments and reviews within a day.\n6. Post an update every week, such as a special or a new product.";
+  return "I can help with business names, taglines, a description, social media posts, customer replies, logo ideas and tips to improve your listing. Tell me which one you want, and include what you sell and where you are.";
+}
+async function ask(prompt,opts){
+  let s=null;if(hasClaude){try{s=await claude.use("sample")}catch(e){}}
+  if(!s){
+    const o=localAsk(prompt);
+    if(opts&&opts.onText)opts.onText({text:o});
+    return o;
+  }
+  const r=await s(prompt,Object.assign({cache:false},opts||{}));return r.text;
+}
+async function aiRun(btn,label,fn){
+  if(btn.disabled)return;const old=btn.textContent;btn.disabled=true;btn.textContent=label;
+  try{await fn()}catch(e){toast(aiErr(e),true)}finally{btn.disabled=false;btn.textContent=old;if(btn===$("aiPic"))renderPedit()}
+}
+function hintTxt(){const h=$("f-hint").value.trim();return h?"\nThe owner's instructions (follow them): "+h:""}
+function bizFacts(){readForm();return "Business name: "+D.name.trim()+"\nCategory: "+D.category+"\nLocation: "+(locText(D)||"not given")+"\nWhat they do or sell (from the owner): "+(D.facts.trim()||"not given")}
+$("aiDesc").onclick=()=>aiRun($("aiDesc"),"Writing…",async()=>{
+  readForm();if(!D.name.trim()){toast("Add your business name first",true);$("f-name").focus();return}
+  const t=await ask("Write a short description for a small business post on a community board.\n"+bizFacts()+hintTxt()+"\n\nRules: 50 to 90 words, warm, specific and in plain language. Use only the facts above. Do not invent prices, years, awards, addresses, phone numbers or reviews; if details are thin, stay general. No hashtags, no emojis, no quotation marks. Output only the description.",{onText:({text})=>{$("f-desc").value=text;descCount()}});
+  $("f-desc").value=t.trim();readForm();descCount();preview();
+});
+$("aiTag").onclick=()=>aiRun($("aiTag"),"Thinking…",async()=>{
+  readForm();if(!D.name.trim()){toast("Add your business name first",true);$("f-name").focus();return}
+  const t=await ask("Suggest 5 short, distinct taglines (at most 8 words each) for this business.\n"+bizFacts()+hintTxt()+(D.desc.trim()?"\nDescription: "+D.desc.trim():"")+"\n\nUse only the facts given. Reply ONLY with a JSON array of 5 strings.",{modelTier:"quick"});
+  let a=[];try{a=JSON.parse(t.match(/\[[\s\S]*\]/)[0])}catch(e){}
+  a=a.filter(x=>typeof x==="string"&&x.trim()).slice(0,5);
+  const box=$("tagChips");box.innerHTML="";
+  if(!a.length){toast("Could not read the suggestions. Please try again.",true);return}
+  a.forEach(x=>{const b=el("button","bub p",x.trim().slice(0,120));b.type="button";b.onclick=()=>{$("f-tag").value=b.textContent;readForm();preview()};box.append(b)});
+});
+const SCENES={"Storefront":"the front of a small shop or workspace seen from the street, with a striped awning and an open door, shapes only for signage","Products or services":"a tidy still life of what this business sells or the tools of its trade on a counter","People at work":"two or three simple stylised figures (no facial detail) doing the work of this business","Inside the space":"the inside of the shop or workspace with shelves, a counter, a lamp and a plant","Wide banner":"a wide decorative banner that evokes this business with a simple repeating motif"};
+$("aiPic").onclick=()=>aiRun($("aiPic"),"Drawing…",async()=>{
+  readForm();if(!D.name.trim()){toast("Add your business name first",true);$("f-name").focus();return}
+  if(D.imgs.length>=MAX_PICS)return;
+  const kind=$("scene").value,vb=kind==="Wide banner"?"0 0 900 300":"0 0 800 500";
+  const t=await ask("You are an expert SVG illustrator. Draw a flat, friendly illustration for a small business post.\n"+bizFacts()+hintTxt()+"\nScene: "+SCENES[kind]+".\n\nRules: viewBox=\""+vb+"\" and xmlns; clear focal point with foreground, middle and background; a cohesive palette of 4 to 6 colours; absolutely no text or letters; no scripts, no external images or fonts; keep the markup compact, under about 7000 characters. Output ONLY the <svg> element.",{modelTier:"complex"});
+  const s=cleanSvg(t,60000);if(!s)throw {code:"badsvg"};if(s==="TOOBIG")throw {code:"toobig"};
+  D.imgs.push({k:"svg",d:s,c:kind});renderPedit();preview();toast("Picture added. It is labelled Illustration.");
+});
+$("upPhoto").onclick=()=>$("photoFile").click();
+$("photoFile").onchange=async e=>{
+  const files=[...e.target.files];e.target.value="";let bad=0;
+  for(const f of files){
+    if(D.imgs.length>=MAX_PICS)break;
+    try{const d=await shrink(f,760,72000);if(d)D.imgs.push({k:"photo",d,c:""});else bad++}catch(x){bad++}
+  }
+  renderPedit();preview();if(bad)toast("Could not use "+bad+" file"+(bad>1?"s":"")+". Try a smaller photo.",true);
+};
+$("upLogo").onclick=()=>$("logoFile").click();
+$("logoFile").onchange=async e=>{
+  const f=e.target.files[0];e.target.value="";if(!f)return;
+  try{const d=await shrink(f,256,26000);if(!d)throw 0;D.logo={k:"img",d};renderLogoPrev();preview();toast("Logo added")}catch(x){toast("Could not use that file. Try a smaller image.",true)}
+};
+$("rmLogo").onclick=()=>{D.logo=null;renderLogoPrev();preview()};
+$("goLogo").onclick=()=>{readForm();showView("logos")};
+$("publish").onclick=publish;
+$("cancelEdit").onclick=()=>{D=blankDraft();fillForm();showView("feed")};
+$("clearDraft").onclick=()=>{D=blankDraft();try{localStorage.removeItem("ms_biz_draft")}catch(e){}fillForm();$("tagChips").innerHTML="";$("f-hint").value=""};
+$("f-country").addEventListener("change",syncCountry);
+["f-name","f-cat","f-country","f-region","f-city","f-addr","f-phone","f-wa","f-email","f-web","f-hours","f-facts","f-desc","f-tag"].forEach(id=>{$(id).addEventListener("input",()=>{readForm();descCount();preview();if(id==="f-name")renderLogoPrev()});$(id).addEventListener("change",()=>{readForm();preview()})});
+
+/* ---------- AI assistant ---------- */
+const AI={msgs:[],busy:false};
+const AI_SYS="You are the assistant inside Business Studio, a community board where small businesses post listings. Help with business names, descriptions, taglines, logo ideas, social media posts, replies to customers and tips for a better listing. Be practical and concise. Write plain text only: no markdown symbols such as ** or #; use short lines or numbered lists. Never invent facts about the business such as prices, awards, years or addresses; ask a short question if you need them. If asked to draw a logo or picture, describe concepts in words and mention that the Logo maker tab can draw them.";
+const STARTERS=["Give me 8 business name ideas","Write a friendly description of my business","Give me 5 logo ideas","Write a social media post announcing my business","How can I make my listing stand out?","Write a reply to a customer asking about prices"];
+function aiCtx(){readForm();if(!$("aiCtx").checked||!D.name.trim())return "";return "\n\nDetails the person has entered about their business:\n"+bizFacts()+(D.desc.trim()?"\nDescription so far: "+D.desc.trim().slice(0,600):"")}
+function firstLine(t){const l=String(t).split("\n").map(x=>x.trim()).filter(Boolean)[0]||"";return l.replace(/^(\d+[.)]|[-*•])\s*/,"").replace(/^["“]|["”]$/g,"").trim()}
+function addMsg(role,text){
+  const log=$("aiLog"),row=el("div","msg "+role),nm=el("div","nm2",role==="u"?"You":"Claude"),bb=el("div","bb",text);
+  row.append(nm,bb);log.append(row);log.scrollTop=log.scrollHeight;return {row,bb};
+}
+function addActions(row,out,userText){
+  const a=el("div","acts"),mk=(t,fn,c)=>{const b=el("button","bub"+(c?" "+c:""),t);b.type="button";b.onclick=fn;a.append(b)};
+  mk("Copy",async()=>{try{await navigator.clipboard.writeText(out);toast("Copied")}catch(e){toast("Copy was blocked here",true)}});
+  mk("Use as description",()=>{$("f-desc").value=out.slice(0,1200);readForm();descCount();preview();toast("Added to your post draft")},"p");
+  mk("Use as tagline",()=>{$("f-tag").value=firstLine(out).slice(0,120);readForm();preview();toast("Added to your post draft")},"p");
+  if(/logo|brand|icon|emblem|mark/i.test(userText))mk("Design this in the logo maker",()=>{$("l-idea").value=firstLine(out).slice(0,300);showView("logos")},"");
+  mk("Suggest follow-up prompts",()=>{const b=a.lastChild&&[...a.children].find(x=>x.textContent==="Suggest follow-up prompts");aiRun(b,"Thinking…",()=>followUps(row,out))},"p");
+  if(userText)mk("Save prompt to my library",()=>saveToLib({t:firstLine(userText).slice(0,60)||"My prompt",c:"Prompt tools",k:"text",p:userText,o:out}),"");
+  row.append(a);
+}
+function parseList(t,n){let a=[];try{a=JSON.parse(String(t).match(/\[[\s\S]*\]/)[0])}catch(e){}return a.filter(x=>typeof x==="string"&&x.trim()).map(x=>x.trim().slice(0,300)).slice(0,n)}
+function putPrompt(x){$("aiIn").value=x;$("aiIn").focus();toast("Prompt added. Edit it, then press Send.")}
+async function followUps(row,out){
+  const t=await ask("Here is an answer an AI assistant gave a small business owner:\n---\n"+out.slice(0,1800)+"\n---\nWrite 3 short follow-up prompts the owner could send next, in the first person, to improve or build on this answer. Reply ONLY with a JSON array of 3 strings.",{modelTier:"quick"});
+  const a=parseList(t,3);if(!a.length){toast("Could not read the prompts. Please try again.",true);return}
+  const old=row.querySelector(".fu");if(old)old.remove();
+  const box=el("div","starters fu");box.style.marginTop="8px";
+  a.forEach(x=>{const b=el("button","bub on",x);b.type="button";b.style.textAlign="left";b.onclick=()=>putPrompt(x);box.append(b)});
+  row.append(box);
+}
+function renderChat(){
+  const log=$("aiLog");log.innerHTML="";
+  if(!AI.msgs.length){log.append(el("p","chatempty","Ask for business names, a description, logo ideas, a social media post or a reply to a customer. Pick a starter above or write your own."));return}
+  AI.msgs.forEach((m,i)=>{const r=addMsg(m.role==="user"?"u":"a",m.content);if(m.role==="assistant")addActions(r.row,m.content,AI.msgs[i-1]?AI.msgs[i-1].content:"")});
+}
+async function sendAI(text){
+  text=String(text||"").trim();if(!text||AI.busy)return;
+  AI.busy=true;$("aiSend").disabled=true;$("aiIn").value="";
+  const log=$("aiLog"),e=log.querySelector(".chatempty");if(e)e.remove();
+  const um=addMsg("u",text),am=addMsg("a","Thinking…");
+  const msgs=AI.msgs.slice(-10).map(m=>({role:m.role,content:m.content}));
+  msgs.push({role:"user",content:text});
+  msgs[0]={role:"user",content:AI_SYS+aiCtx()+"\n\n"+msgs[0].content};
+  try{
+    const out=(await ask(msgs,{onText:({text:t})=>{if(t)am.bb.textContent=t;log.scrollTop=log.scrollHeight}})).trim();
+    if(!out)throw {code:"empty"};
+    AI.msgs.push({role:"user",content:text},{role:"assistant",content:out});
+    am.bb.textContent=out;addActions(am.row,out,text);log.scrollTop=log.scrollHeight;
+  }catch(err){
+    um.row.remove();am.row.remove();$("aiIn").value=text;toast(aiErr(err),true);
+    if(!AI.msgs.length)renderChat();
+  }finally{AI.busy=false;$("aiSend").disabled=false}
+}
+STARTERS.forEach(t=>{const b=el("button","bub p",t);b.type="button";b.onclick=()=>sendAI(t);$("starters").append(b)});
+$("aiSend").onclick=()=>sendAI($("aiIn").value);
+$("aiIn").onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendAI($("aiIn").value)}};
+$("aiClear").onclick=()=>{if(AI.busy)return;AI.msgs=[];renderChat()};
+renderChat();
+
+/* ---------- prompt on open ---------- */
+function openPrompt(){
+  if(!hasClaude||!$("op").hidden)return;
+  $("op").hidden=false;$("op-in").value="";$("op-in").focus();
+}
+function closePrompt(){$("op").hidden=true}
+function submitOp(text){text=String(text||"").trim();if(!text){$("op-in").focus();return}closePrompt();showView("ai");sendAI(text)}
+STARTERS.slice(0,4).forEach(t=>{const b=el("button","bub p",t);b.type="button";b.onclick=()=>submitOp(t);$("op-starters").append(b)});
+$("op-go").onclick=()=>submitOp($("op-in").value);
+$("op-skip").onclick=closePrompt;
+$("op-in").onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();submitOp($("op-in").value)}};
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("op").hidden)closePrompt()});
+
+/* ---------- open-time prompt (no login) ---------- */
+let promptShown=false;
+function renderGate(state){if(state==="loading"||promptShown)return;promptShown=true;openPrompt()}
+
+/* ---------- prompt library ---------- */
+const LCATS=["Names & taglines","Descriptions","Social media","Email & customers","Images","Code","Prompt tools"];
+const BUILTIN=[
+{id:"names",c:"Names & taglines",k:"text",t:"Business name ideas",p:"Act as a branding specialist. Suggest 10 name ideas for a {what} business aimed at {audience}. Tone: {tone}. For each name add a one-line reason. Avoid names that are hard to spell or say. Format: numbered list.",why:"A role, an audience, a tone, a limit and a format give the model clear edges."},
+{id:"taglines",c:"Names & taglines",k:"text",t:"Taglines",p:"Write 8 taglines of at most 8 words for {biz}, a {what} business in {place}. Audience: {audience}. Tone: {tone}. Mix short punchy lines with warmer ones. Format: numbered list.",why:"Mixing styles in one request gives variety to choose from."},
+{id:"desc",c:"Descriptions",k:"text",t:"Business description",p:"Act as a copywriter for small businesses. Write a description of {biz} for a community listing. What they do: {what}. Place: {place}. Audience: {audience}. Tone: {tone}. Use only the facts given and do not invent prices, awards or years. End with a call to action. Length: about 80 words.",why:"The no-invention rule keeps the copy honest."},
+{id:"story",c:"Descriptions",k:"text",t:"About us story",p:"Write a short About us story for {biz}, a {what} business in {place}. Audience: {audience}. Tone: {tone}. Structure it as: why we started, what we make, what makes us different, an invitation to visit. Use only the facts given and add [brackets] where the owner should add a detail. Length: about 120 words.",why:"A fixed structure plus bracketed gaps stops the model from making things up."},
+{id:"post",c:"Social media",k:"text",t:"Social media posts",p:"Act as a social media manager. Write 3 different posts for {biz}, a {what} business. Goal: {topic}. Audience: {audience}. Tone: {tone}. Each post is under 60 words, has one call to action and 3 relevant hashtags. Number the posts.",why:"Asking for three versions lets you compare and pick."},
+{id:"calendar",c:"Social media",k:"text",t:"7-day content calendar",p:"Act as a content planner. Create a 7-day social media calendar for {biz}, a {what} business. Goal: {topic}. Audience: {audience}. Tone: {tone}. Format: a table with the columns Day, Content idea, Format, Caption starter.",why:"Naming the exact table columns gives a result you can use straight away."},
+{id:"ad",c:"Social media",k:"text",t:"Short ads",p:"Write 5 short ads of at most 25 words for {biz}. Offer or message: {topic}. Audience: {audience}. Tone: {tone}. Each ad starts with a different hook (question, number, benefit, story, offer). Format: numbered list.",why:"Different hooks per line make the options genuinely different."},
+{id:"email",c:"Email & customers",k:"text",t:"Promotional email",p:"Write a promotional email for {biz}, a {what} business. Message: {topic}. Audience: {audience}. Tone: {tone}. Include: a subject line under 8 words, a preview line, a body of about 120 words and one clear button text. Do not invent discounts or dates.",why:"Listing the parts of the email prevents missing pieces."},
+{id:"reply",c:"Email & customers",k:"text",t:"Customer reply",p:"Write a polite reply from {biz} to this customer message: \"{topic}\". Tone: {tone}. Acknowledge how the customer feels, answer what you can, and offer a next step. Do not invent prices or opening hours; use [brackets] for details the owner must add. Length: under 90 words.",why:"Brackets mark what a human still has to confirm."},
+{id:"faq",c:"Email & customers",k:"text",t:"Customer FAQ",p:"Write 6 frequently asked questions and answers for {biz}, a {what} business in {place}. Audience: {audience}. Tone: {tone}. Where the answer is unknown, write that the owner should add it. Format: Q: and A: pairs.",why:"Admitting unknowns beats a confident guess."},
+{id:"imgstore",c:"Images",k:"svg",t:"Shop illustration",p:"Draw a flat, friendly illustration for {biz}, a {what} business: {topic}. Show the front of a small shop with a striped awning and an open door. Use a cohesive palette of 4 to 6 colours with a clear foreground, middle and background. No text or letters.",why:"Describing the scene, palette and depth gives a coherent picture."},
+{id:"imgbanner",c:"Images",k:"svg",t:"Decorative banner",p:"Draw a wide decorative banner for {biz}, a {what} business, using a simple repeating motif that suits {tone} branding. Use 4 colours. No text or letters.",why:"A repeating motif is easy for a model to draw well."},
+{id:"html",c:"Code",k:"code",t:"Website section (HTML)",p:"Write one self-contained HTML section with inline CSS and no scripts for the website of {biz}, a {what} business in {place}. Include a headline, a one-line tagline in a {tone} tone, three offerings taken from the description, and a contact button. Make it mobile friendly and use a calm two-colour palette.",why:"Naming what is allowed (inline CSS, no scripts) keeps the code portable."},
+{id:"json",c:"Code",k:"code",t:"Business data as JSON",p:"Create a JSON object describing {biz} with the fields name, tagline, services (an array), location, audience and tone. Use only these facts: {what}; {place}; {audience}. Use null for anything unknown.",why:"Fixed field names and a null rule produce data you can reuse."},
+{id:"optimize",c:"Prompt tools",k:"text",t:"Prompt optimizer",p:"Improve the prompt below. Add a role, context, audience, format, length and constraints, and keep the original intent. Return the improved prompt, then a short list of what you changed.\n\nPROMPT:\n{topic}",why:"Asking the model to critique a prompt is a quick way to learn what was missing."},
+{id:"rewrite",c:"Prompt tools",k:"text",t:"Rewrite in a new tone",p:"Rewrite the text below in a {tone} tone for {audience}. Make it about 30 percent shorter and keep every fact.\n\nTEXT:\n{topic}",why:"One change at a time (tone and length) keeps edits predictable."},
+{id:"structure",c:"Prompt tools",k:"text",t:"Turn text into a checklist",p:"Turn the text below into a checklist of actions with the most urgent first. Keep each item under 12 words and add nothing new.\n\nTEXT:\n{topic}",why:"Structuring existing content is safer than inventing new content."}
+];
+const CUSTOMS=[{id:"custom",t:"Free prompt (text)",k:"text",p:""},{id:"customsvg",t:"Free prompt (illustration)",k:"svg",p:""},{id:"customcode",t:"Free prompt (code)",k:"code",p:""}];
+const typeItem=id=>CUSTOMS.concat(BUILTIN).find(x=>x.id===id)||CUSTOMS[0];
+const KIND={text:"Text",svg:"Image",code:"Code"};
+const LIB={items:{},ready:false};
+const L={tab:"starter",cat:"All",q:""};
+async function libLoad(){
+  try{
+    if(db&&me.id){const sn=await db.doc("data/users/"+me.id+"/library").get();const d=sn.exists?sn.data():null;LIB.items=d&&d.items&&typeof d.items==="object"?d.items:{}}
+    else LIB.items=JSON.parse(localStorage.getItem("ms_lib")||"{}")||{};
+  }catch(e){LIB.items={}}
+  LIB.ready=true;renderLib();
+}
+async function libSave(){
+  try{
+    if(db&&me.id)await db.doc("data/users/"+me.id+"/library").set({items:LIB.items,ts:Date.now()});
+    else localStorage.setItem("ms_lib",JSON.stringify(LIB.items));
+    return true;
+  }catch(e){toast("Could not save your library. Please try again.",true);return false}
+}
+async function saveToLib(it){
+  if(Object.keys(LIB.items).length>=60){toast("Your library is full (60 items). Delete one first.",true);return false}
+  const id=rid();
+  LIB.items[id]={t:str(it.t,80),c:LCATS.includes(it.c)?it.c:"Prompt tools",k:KIND[it.k]?it.k:"text",p:str(it.p,3000),o:str(it.o||"",3000),ts:Date.now()};
+  if(JSON.stringify(LIB.items).length>200000){delete LIB.items[id];toast("That is too large to save.",true);return false}
+  const ok=await libSave();
+  if(!ok)delete LIB.items[id];else{toast("Saved to your library");renderLib()}
+  return ok;
+}
+const fillTpl=(t,v)=>String(t).replace(/\{(\w+)\}/g,(m,k)=>v[k]!==undefined?v[k]:m);
+function phNodes(box,text){String(text).split(/(\{\w+\})/).forEach(part=>{if(!part)return;box.append(/^\{\w+\}$/.test(part)?el("span","ph",part):document.createTextNode(part))})}
+function libVals(){readForm();return {biz:D.name.trim()||"my business",what:D.facts.trim()||"small business",place:locText(D)||"my area",audience:"local customers",tone:"friendly",topic:"[add your topic or goal]"}}
+function useInGen(it,mine){
+  $("aiIn").value=fillTpl(it.p,libVals()).slice(0,1500);
+  showView("ai");$("aiIn").focus();toast("Prompt added to the AI assistant. Edit it, then press Send.");
+}
+function libCard(it,mine){
+  const c=el("article","card pc"),h=el("div","row");
+  h.append(el("h3","",it.t),el("span","cat",it.c),el("span","cat",KIND[it.k]||"Text"));c.append(h);
+  const pt=el("div","ptext");phNodes(pt,it.p);c.append(pt);
+  if(it.why)c.append(el("p","why","Why it works: "+it.why));
+  if(it.o){const d=el("details"),sm=el("summary","","Saved output"),pre=el("div","ptext",it.o);d.append(sm,pre);c.append(d)}
+  const a=el("div","acts"),mk=(t,fn,cls)=>{const b=el("button","bub"+(cls?" "+cls:""),t);b.type="button";b.onclick=fn;a.append(b)};
+  mk("Use in AI assistant",()=>useInGen(it,mine),"on");
+  mk("Copy",async()=>{try{await navigator.clipboard.writeText(it.p);toast("Prompt copied")}catch(e){toast("Copy was blocked here",true)}});
+  if(!mine)mk("Save to my library",()=>saveToLib(it),"p");
+  else mk("Delete",()=>confirmBar("Delete “"+it.t+"” from your library?","Yes, delete",async()=>{const old=LIB.items[it.id];delete LIB.items[it.id];if(!(await libSave()))LIB.items[it.id]=old;renderLib()}),"danger");
+  c.append(a);return c;
+}
+function renderLib(){
+  const grid=$("lib-grid");if(!grid)return;grid.innerHTML="";
+  const mineIds=Object.keys(LIB.items),q=L.q.trim().toLowerCase();
+  $("lib-tab-starter").classList.toggle("on",L.tab==="starter");$("lib-tab-mine").classList.toggle("on",L.tab==="mine");
+  $("lib-tab-mine").textContent="My library ("+mineIds.length+")";
+  $("libHint").textContent=L.tab==="starter"?BUILTIN.length+" starter prompts. Save any to your library.":(db&&me.id?"Private to your account.":"Stored in this browser.");
+  let items=L.tab==="starter"?BUILTIN.map(x=>Object.assign({},x)):mineIds.map(id=>Object.assign({id},LIB.items[id])).sort((a,b)=>(b.ts||0)-(a.ts||0));
+  items=items.filter(x=>(L.cat==="All"||x.c===L.cat)&&(!q||(x.t+" "+x.p+" "+x.c).toLowerCase().includes(q)));
+  items.forEach(x=>grid.append(libCard(x,L.tab==="mine")));
+  const em=$("lib-empty");em.hidden=!!items.length;em.innerHTML="";
+  if(!items.length)em.append(el("p","",L.tab==="mine"&&!mineIds.length?"Your library is empty. Save a starter prompt, a prompt you wrote, or one of the assistant's answers to see it here.":"No prompts match that search."));
+}
+$("lib-cat").append(...["All",...LCATS].map(c=>{const o=el("option","",c==="All"?"All categories":c);o.value=c;return o}));
+$("lib-new-c").append(...LCATS.map(c=>{const o=el("option","",c);o.value=c;return o}));
+$("lib-tab-starter").onclick=()=>{L.tab="starter";renderLib()};
+$("lib-tab-mine").onclick=()=>{L.tab="mine";renderLib()};
+$("lib-q").oninput=()=>{L.q=$("lib-q").value;renderLib()};
+$("lib-cat").onchange=()=>{L.cat=$("lib-cat").value;renderLib()};
+$("lib-new-save").onclick=async()=>{
+  const t=$("lib-new-t").value.trim(),p=$("lib-new-p").value.trim();
+  if(!t){toast("Give the prompt a title",true);$("lib-new-t").focus();return}
+  if(p.length<15){toast("Write the prompt (at least a sentence)",true);$("lib-new-p").focus();return}
+  if(await saveToLib({t,c:$("lib-new-c").value,k:$("lib-new-k").value,p})){$("lib-new-t").value="";$("lib-new-p").value="";L.tab="mine";renderLib();$("lib-add").open=false}
+};
+
+/* ---------- logo maker ---------- */
+const VIBES=["Modern","Friendly","Elegant","Bold","Natural","Playful","Minimal"];
+let vibe="Friendly";
+const PAL={auto:"Choose a palette that suits the business and its personality.",warm:"a warm palette (reds, oranges, golden yellows) with one dark neutral",cool:"a cool palette (blues, teals, soft greens)",earth:"an earthy palette (olive, clay, sand, deep brown)",mono:"one brand colour plus white and near-black",vivid:"a vivid palette of bright, saturated colours with strong contrast"};
+function renderVibes(){const b=$("vibes");b.innerHTML="";VIBES.forEach(v=>{const x=el("button","bub"+(v===vibe?" on":""),v);x.type="button";x.setAttribute("aria-pressed",v===vibe?"true":"false");x.onclick=()=>{vibe=v;renderVibes()};b.append(x)})}
+$("l-pal").onchange=()=>{$("customCols").hidden=$("l-pal").value!=="custom"};
+function logoBrief(){
+  const name=$("l-name").value.trim(),what=$("l-what").value.trim(),style=$("l-style").value,pal=$("l-pal").value;
+  const cols=pal==="custom"?"Use exactly these brand colours: "+$("l-c1").value+" and "+$("l-c2").value+" (plus white or near-black if needed).":"Colours: "+PAL[pal]+".";
+  const idea=$("l-idea").value.trim();
+  return {name,what,style,text:"Business name: "+name+"\nWhat it does: "+(what||"not given")+(idea?"\nThe owner's own idea (follow it closely): "+idea:"")+"\nPersonality: "+vibe+"\nStyle: "+style+"\n"+cols};
+}
+const LOGO_RULES="Rules: flat vector, readable on a white background, at most 3 colours, simple geometric shapes, no photos, no filters, no gradients beyond two stops; a clear central idea related to the business. Where the style includes the name, draw it with <text> (font-family=\"Georgia, 'Trebuchet MS', sans-serif\", text-anchor, inside the viewBox with a margin, not overlapping shapes); for Icon only draw no text. The svg: viewBox=\"0 0 400 400\", xmlns, no scripts, no external resources, compact markup under 3500 characters. Include a <title> element (at most 8 words) naming the idea, for example \"Wheat sheaf in a circle\".";
+let LG=[],cur=-1,lbusy=false;
+const ideaOf=t=>{const m=String(t).match(/<title[^>]*>([^<]{1,80})<\/title>/i);return m?m[1].trim():"Logo concept"};
+const QUICK=[["Simpler","make it simpler, with fewer shapes"],["Bolder","make it bolder, with thicker shapes and stronger contrast"],["Rounder","make the shapes rounder and softer"],["Different colours","use a different colour palette"],["Bigger icon","make the icon bigger"],["Bigger name","make the business name bigger"]];
+const guarded=fn=>async()=>{if(lbusy)return;lbusy=true;try{await fn()}finally{lbusy=false}};
+const fileBase=()=>($("l-name").value.trim()||"logo").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"logo";
+async function designOne(){
+  const b=logoBrief();if(!b.name){toast("Add your business name first",true);$("l-name").focus();return}
+  const seen=LG.map(x=>ideaOf(x.svg));
+  $("logoStatus").textContent="Designing concept "+(LG.length+1)+"…";
+  try{
+    const t=await ask("You are a professional logo designer. Design ONE logo concept for this business.\n"+b.text+"\n\n"+LOGO_RULES+(seen.length?"\nConcepts already shown (do not repeat any of these ideas; use a clearly different central idea, layout and shapes): "+seen.join("; ")+".":"")+"\nOutput ONLY the <svg> element.",{modelTier:"complex"});
+    const s=cleanSvg(t,20000);if(!s)throw {code:"badsvg"};if(s==="TOOBIG")throw {code:"toobig"};
+    LG.push({svg:s,prev:[]});if(LG.length>8)LG.shift();cur=LG.length-1;renderStage();
+  }finally{$("logoStatus").textContent=""}
+}
+async function editLogo(f){
+  const L=LG[cur];if(!L)return;
+  $("logoStatus").textContent="Updating your logo…";
+  try{
+    const t=await ask("You are a professional logo designer. Here is a logo as SVG:\n"+L.svg+"\n\nBusiness brief:\n"+logoBrief().text+"\n\nChange it as requested: "+f+". Keep everything else the same unless the request needs otherwise.\n"+LOGO_RULES+" Output ONLY the revised <svg> element.",{modelTier:"complex"});
+    const s=cleanSvg(t,20000);if(!s)throw {code:"badsvg"};if(s==="TOOBIG")throw {code:"toobig"};
+    L.prev.push(L.svg);if(L.prev.length>10)L.prev.shift();L.svg=s;renderStage();toast("Logo updated");
+  }finally{$("logoStatus").textContent=""}
+}
+function renderStage(){
+  const st=$("lstage");st.innerHTML="";const L=LG[cur];
+  if(!L){st.hidden=true;return}
+  st.hidden=false;
+  const art=el("div","sart"),im=el("img");im.alt="Logo concept "+(cur+1)+": "+ideaOf(L.svg);im.src=svgUri(L.svg);art.append(im);
+  const side=el("div");
+  side.append(el("p","hint","Concept "+(cur+1)+" of "+LG.length),el("h3","",ideaOf(L.svg)));
+  const r1=el("div","row mt"),use=el("button","bub on","Use in my post"),dl=el("button","bub","Download SVG"),cp=el("button","bub","Copy code");
+  use.type=dl.type=cp.type="button";
+  use.onclick=()=>{D.logo={k:"svg",d:L.svg};renderLogoPrev();preview();toast("Logo added to your post");showView("post")};
+  dl.onclick=()=>saveFile(fileBase()+"-logo-"+(cur+1)+".svg",L.svg);
+  cp.onclick=async()=>{try{await navigator.clipboard.writeText(L.svg);toast("SVG code copied")}catch(e){toast("Copy was blocked here",true)}};
+  r1.append(use,dl,cp);side.append(r1);
+  const lab=el("p","hint","Edit this logo");lab.style.marginTop="18px";lab.style.fontWeight="700";side.append(lab);
+  const chips=el("div","chips");
+  QUICK.forEach(([t,f])=>{const b=el("button","bub",t);b.type="button";b.onclick=()=>aiRun(b,"…",guarded(()=>editLogo(f)));chips.append(b)});
+  side.append(chips);
+  const rr=el("div","row mt"),inp=el("input");inp.type="text";inp.placeholder="Or describe a change, e.g. add a leaf";inp.maxLength=120;inp.setAttribute("aria-label","Describe a change to this logo");inp.style.flex="1";inp.style.minWidth="0";
+  const go=el("button","bub p","Apply");go.type="button";
+  go.onclick=()=>{const f=inp.value.trim();if(!f){inp.focus();return}aiRun(go,"…",guarded(()=>editLogo(f)))};
+  inp.onkeydown=e=>{if(e.key==="Enter")go.click()};
+  rr.append(inp,go);
+  if(L.prev.length){const un=el("button","bub","Undo");un.type="button";un.onclick=()=>{if(lbusy)return;L.svg=L.prev.pop();renderStage()};rr.append(un)}
+  side.append(rr);
+  const nb=el("button","btn alt","Show me a different one");nb.type="button";nb.style.marginTop="18px";
+  nb.onclick=()=>aiRun(nb,"Designing…",guarded(designOne));
+  side.append(nb,el("p","hint","Your earlier concepts stay below so you can go back to them."));
+  if(LG.length>1){
+    const h=el("div","hist");
+    LG.forEach((x,i)=>{const b=el("button",i===cur?"on":"");b.type="button";b.setAttribute("aria-label","Show concept "+(i+1)+": "+ideaOf(x.svg));b.setAttribute("aria-pressed",i===cur?"true":"false");const t=el("img");t.alt="";t.src=svgUri(x.svg);b.append(t);b.onclick=()=>{if(lbusy)return;cur=i;renderStage()};h.append(b)});
+    side.append(h);
+  }
+  st.append(art,side);
+}
+$("genLogo").onclick=()=>aiRun($("genLogo"),"Designing…",guarded(designOne));
+$("brainstorm").onclick=()=>aiRun($("brainstorm"),"Thinking…",async()=>{
+  const b=logoBrief();if(!b.name){toast("Add your business name first",true);$("l-name").focus();return}
+  const t=await ask("Suggest 5 distinct logo concepts for this business. Write each as one short sentence (at most 20 words) describing the central image and the colours.\n"+b.text+"\n\nReply ONLY with a JSON array of 5 strings.",{modelTier:"quick"});
+  let a=[];try{a=JSON.parse(t.match(/\[[\s\S]*\]/)[0])}catch(e){}
+  a=a.filter(x=>typeof x==="string"&&x.trim()).slice(0,5);
+  const box=$("ideaChips");box.innerHTML="";
+  if(!a.length){toast("Could not read the ideas. Please try again.",true);return}
+  a.forEach(x=>{const c=el("button","bub p",x.trim().slice(0,160));c.type="button";c.onclick=()=>{$("l-idea").value=x.trim().slice(0,300);$("genLogo").click()};box.append(c)});
+});
+async function saveFile(name,data){
+  let d=null;if(hasClaude){try{d=await claude.use("downloads")}catch(e){}}
+  if(!d){
+    try{const u=URL.createObjectURL(new Blob([data],{type:"text/plain"})),a=document.createElement("a");a.href=u;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);toast("Download ready");}
+    catch(e){toast("Download failed. Use Copy code instead.",true)}
+    return;
+  }
+  try{await d.save({filename:name,data});toast("Download ready")}catch(e){toast(e&&e.code==="declined"?"Download cancelled":"Download failed. Use Copy code instead.",e&&e.code!=="declined")}
+}
+
+/* ---------- prompt generation ---------- */
+const stripQ=t=>String(t).trim().replace(/^["“]+|["”]+$/g,"").trim();
+$("aiSuggest").onclick=()=>aiRun($("aiSuggest"),"Thinking…",async()=>{
+  const t=await ask("Suggest 6 ready-to-use prompts that a small business owner could send to an AI assistant to get useful help, such as names, a description, social posts, offers, customer replies or ideas. Write each one in the first person as the owner, 12 to 30 words, specific to the business below. If no details are given, keep them general and use [brackets] for details the owner must fill in."+aiCtx()+"\n\nReply ONLY with a JSON array of 6 strings.",{modelTier:"quick"});
+  let a=[];try{a=JSON.parse(t.match(/\[[\s\S]*\]/)[0])}catch(e){}
+  a=a.filter(x=>typeof x==="string"&&x.trim()).slice(0,6);
+  const box=$("aiSugg");box.innerHTML="";
+  if(!a.length){toast("Could not read the suggestions. Please try again.",true);return}
+  a.forEach(x=>{const b=el("button","bub p",x.trim().slice(0,300));b.type="button";b.style.textAlign="left";b.onclick=()=>{$("aiIn").value=x.trim().slice(0,1500);$("aiIn").focus()};box.append(b)});
+});
+$("aiImprove").onclick=()=>aiRun($("aiImprove"),"Improving…",async()=>{
+  const p=$("aiIn").value.trim();
+  if(p.length<5){toast("Type a rough prompt first",true);$("aiIn").focus();return}
+  const t=await ask("Rewrite the rough prompt below into one clear, specific prompt for an AI assistant. Add the audience, tone, format and length where they are missing. Keep the original intent and facts and do not invent new facts. Output ONLY the improved prompt as plain text.\n\nROUGH PROMPT:\n"+p+aiCtx(),{modelTier:"default"});
+  const o=stripQ(t);if(!o)throw {code:"empty"};
+  $("aiIn").value=o.slice(0,1500);$("aiIn").focus();toast("Prompt improved. Edit it, then press Send.");
+});
+$("genIdea").onclick=()=>aiRun($("genIdea"),"Writing…",async()=>{
+  const b=logoBrief();if(!b.name){toast("Add your business name first",true);$("l-name").focus();return}
+  const has=$("l-idea").value.trim();
+  const t=await ask("Write one detailed logo design prompt of 40 to 70 words for this business, as a brief to a designer. Name the central symbol, the shapes, the style, the colours (use the palette in the details), the feel of the lettering and what to avoid. "+(has?"Improve and expand the owner's rough idea without changing its intent. ":"")+"\n"+b.text+"\n\nOutput ONLY the prompt as plain text.",{modelTier:"default"});
+  const o=stripQ(t);if(!o)throw {code:"empty"};
+  $("l-idea").value=o.slice(0,600);toast("Logo prompt written. Edit it, then press Design my logo.");
+});
+
+/* ---------- views, filters, startup ---------- */
+function showView(v){
+  ["feed","post","logos","ai","lib","prof"].forEach(k=>{$("view-"+k).hidden=k!==v});
+  document.querySelectorAll(".nl").forEach(b=>b.classList.toggle("on",b.dataset.v===v));
+  $("hero").hidden=v!=="feed";
+  if(v==="logos"&&!$("l-name").value.trim()&&D.name.trim())$("l-name").value=D.name.trim();
+  if(v==="post")preview();
+  if(v==="lib")renderLib();
+  window.scrollTo({top:0,behavior:"auto"});
+}
+document.querySelectorAll(".nl").forEach(b=>b.onclick=()=>showView(b.dataset.v));
+document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>showView(b.dataset.go));
+$("fcat").append(...["All",...CATS].map(c=>{const o=el("option","",c==="All"?"All categories":c);o.value=c;return o}));
+$("f-cat").append(...CATS.map(c=>{const o=el("option","",c);o.value=c;return o}));
+$("f-country").append(...[["","Select a country"],["Online","Online only (no fixed location)"],...COUNTRIES.map(c=>[c[0],c[0]])].map(([v,t])=>{const o=el("option","",t);o.value=v;return o}));
+$("q").oninput=()=>{filt.q=$("q").value;renderFeed()};
+$("fcat").onchange=()=>{filt.cat=$("fcat").value;renderFeed()};
+$("fsort").onchange=()=>{filt.sort=$("fsort").value;renderFeed()};
+$("fwho").onchange=()=>{filt.who=$("fwho").value;renderFeed()};
+
+function note(t){const n=$("note");n.hidden=!t;n.textContent=t||""}
+async function start(){
+  renderGate("loading");loadDraft();renderVibes();fillForm();updateStats();renderFeed();
+  const h=(location.hash||"").slice(1);if(["feed","post","logos","ai","lib"].includes(h))showView(h);
+  if(!hasClaude){
+    localMode=true;db=makeLocalDb();me={id:"local",name:"",avatarUrl:"",isOwner:true};canWrite=true;
+  }else{
+    try{db=await claude.use("db");user=await claude.use("user")}catch(e){}
+    if(user){try{me=await user.me();canWrite=await user.can("data.write")}catch(e){}}
+  }
+  $("who").hidden=false;$("whoName").textContent=(me&&me.name)||(localMode?"You":"Guest");if(me&&me.avatarUrl)$("whoImg").src=me.avatarUrl;else $("whoImg").hidden=true;
+  renderGate(me&&me.id?"in":"out");
+  libLoad();
+  if(!db){note("Sign in to Claude to see and join Business Studio.");return}
+  if(!me.id){note("You are viewing as a guest. Sign in to post, react and comment.")}
+  else if(canWrite===false){note("You have view-only access. Ask the owner of this page for Contributor access to post, react and comment.")}
+  const dead=e=>note(e&&e.code==="revoked"?"Your access changed. Reload the page.":"Live updates stopped. Reload the page to reconnect.");
+  [["posts"],["reactions"],["comments"],["reviews"]].forEach(([col])=>{
+    db.collection(col).limit(500).onSnapshot(snap=>{
+      S[col]=snap.docs;
+      const o=OWN[col];
+      if(me.id&&!o.pending){const mine=snap.docs.find(d=>d.id===me.id);o.d=mine?clone((mine.data()||{})[o.f]||{}):{}}
+      o.ready=true;sched();
+    },dead);
+  });
+  db.collection("profiles").limit(500).onSnapshot(snap=>{
+    PROF={};snap.docs.forEach(d=>{const x=d.data()||{};PROF[d.id]={name:str(x.name,40),biz:str(x.biz,60),bio:str(x.bio,160)}});
+    if(me.id&&PROF[me.id]&&PROF[me.id].name)$("whoName").textContent=PROF[me.id].name;
+    sched();
+  },()=>{});
+}
+start();
+})();
+</script>
+
+</body></html>
